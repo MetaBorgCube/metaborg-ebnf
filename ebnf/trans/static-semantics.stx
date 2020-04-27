@@ -1,0 +1,28 @@
+module static-semantics
+
+// Grammar
+signature
+  sorts Grammar
+  constructors
+    Grammar : Word * Word -> Grammar
+
+rules
+  grammarOK : Grammar
+
+  grammarOK(Grammar(w1, w2)) :-
+    wordOK(w1),
+    wordOK(w2).
+  
+
+// Word
+signature
+  sorts Word
+  constructors
+    Hello	: Word
+    Ebnf	: Word
+
+rules
+  wordOK: Word
+
+  wordOK(Hello()).
+  wordOK(Ebnf()).

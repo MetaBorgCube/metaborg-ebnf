@@ -1,0 +1,16 @@
+module ebnf
+
+imports
+  
+  Common
+
+context-free start-symbols
+  
+  Start
+
+context-free syntax
+  
+  Start.Grammar = <<Word> <Word>>
+  
+  Word.Hello = <hello>
+  Word.Ebnf = <ebnf>

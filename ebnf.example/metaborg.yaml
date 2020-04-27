@@ -1,0 +1,10 @@
+---
+id: org.metaborg:ebnf.example:0.1.0-SNAPSHOT
+name: ebnf
+dependencies:
+  compile:
+  - org.metaborg:ebnf:0.1.0-SNAPSHOT
+debug:
+  typesmart: false
+build:
+  useBuildSystemSpec: true
