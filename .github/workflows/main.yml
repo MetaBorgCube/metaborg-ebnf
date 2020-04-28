@@ -37,10 +37,10 @@ jobs:
 
     - name: Verify language
       run: mvn verify
-      working-directory: ./ebnf
-    - name: Verify tests
-      run: mvn verify
-      working-directory: ./ebnf.test
-    - name: Verify example
-      run: mvn verify
-      working-directory: ./ebnf.example
+      # working-directory: ./ebnf
+    # - name: Verify tests
+    #   run: mvn verify
+    #   working-directory: ./ebnf.test
+    # - name: Verify example
+    #   run: mvn verify
+    #   working-directory: ./ebnf.example
