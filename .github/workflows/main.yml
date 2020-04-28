@@ -23,7 +23,7 @@ jobs:
     - name: Check out repository
       uses: actions/checkout@v2
     - name: Maven
-      uses: docker://maven:jdk-8-slim
+      uses: docker://maven:3.6.3-jdk-8-slim
     - name: Verify language
       run: mvn verify
       working-directory: ./ada
