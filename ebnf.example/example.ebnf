@@ -1,1 +1,4 @@
-hello ebnf
+
+test ::= testing
+simple_return_statement ::= return [expression];
+simple_return_statement ::= return; | return expression;

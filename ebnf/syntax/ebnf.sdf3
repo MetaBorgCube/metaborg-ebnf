@@ -10,7 +10,18 @@ context-free start-symbols
 
 context-free syntax
   
-  Start.Grammar = <<Word> <Word>>
+  Start.Grammar = <<{GrammarDef "\n"}*>>
   
-  Word.Hello = <hello>
-  Word.Ebnf = <ebnf>
+  GrammarDef.Definition = <<Lhs> ::= <Rhs>>
+
+  Lhs.Identifier = <<Identifier>>
+
+  Rhs.Sequence = <<{Term " "}+>>
+
+  Term.Identifier = <<Identifier>>
+  Term.Terminal = <<Terminal>>
+
+  Term.Choice = <<Rhs> | <Rhs>>
+  Term.Opt = <[<Rhs>]>
+  Term.Rep = <{<Rhs>}>
+  Term.Grp = <(<Rhs>)>
