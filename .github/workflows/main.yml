@@ -36,7 +36,9 @@ jobs:
         key: cache-maven-dependencies
 
     - name: Verify language
-      run: mvn verify
+      run: |
+        ls
+        mvn verify
       # working-directory: ./ebnf
     # - name: Verify tests
     #   run: mvn verify
