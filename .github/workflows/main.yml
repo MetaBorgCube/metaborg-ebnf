@@ -28,10 +28,10 @@ jobs:
         java-version: 1.8
     - name: Verify language
       run: mvn verify
-      working-directory: ./ada
+      working-directory: ./ebnf
     - name: Verify tests
       run: mvn verify
-      working-directory: ./ada.test
+      working-directory: ./ebnf.test
     - name: Verify example
       run: mvn verify
-      working-directory: ./ada.example
+      working-directory: ./ebnf.example
