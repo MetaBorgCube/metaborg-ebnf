@@ -12,16 +12,23 @@ context-free syntax
   
   Start.Grammar = <<{GrammarDef "\n"}*>>
   
-  GrammarDef.Definition = <<Lhs> ::= <Rhs>>
+  GrammarDef.Definition = <<Lhs> ::= <Rhs>;>
 
   Lhs.Identifier = <<Identifier>>
 
-  Rhs.Sequence = <<{Term " "}+>>
-
+  Rhs.Sequence = <{<Term> " "}+>
+  
+  Term.Choice = <<Rhs> | <Rhs>> {left}
+  Term.Option = <[<Rhs>]>
+  Term.Repetition = <{<Rhs> <Rhs>}>
+  Term.Group = <(<Rhs>)>
+  
   Term.Identifier = <<Identifier>>
   Term.Terminal = <<Terminal>>
 
-  Term.Choice = <<Rhs> | <Rhs>>
-  Term.Opt = <[<Rhs>]>
-  Term.Rep = <{<Rhs>}>
-  Term.Grp = <(<Rhs>)>
+context-free priorities
+
+	Term.Identifier >
+	Term.Terminal >
+	{Term.Option Term.Repetition Term.Group} >
+	Term.Choice

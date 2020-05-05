@@ -3,5 +3,5 @@ module test
 language ebnf
 
 test parse [[
-  hello ebnf
+  test_ ::= =>;
 ]] parse succeeds

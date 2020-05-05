@@ -3,10 +3,14 @@ module Common
 lexical syntax
  
   Lower			 = [a-z]
-  Special		 = [\;\ ]
+  Upper			 = [A-Z]
+  Special		 = [\[\]\{\}\(\)\<\>\'\"\=\|\.\,\;]
+
+  Letter		 = Lower | Upper
+  Character		 = Lower | Upper | Special | "_"
   
-  Identifier     = Lower (Lower | "_")*
-  Terminal		 = (Lower | Special)+
+  Identifier     = Letter+ "_" (Letter | "_")*
+  Terminal		 = (Character)+
 
   LAYOUT         = [\ \t\n\r] 
 
@@ -19,8 +23,8 @@ lexical restrictions
 
   // Ensure greedy matching for lexicals
   
-  Identifier	-/- [a-z\_]
-  Terminal		-/- [a-z\;]
+  Identifier	-/- [a-zA-Z\_]
+  Terminal		-/- [a-zA-Z\[\]\{\}\(\)\<\>\'\"\=\|\.\,\;\_]
   
   // EOF may not be followed by any char
   
