@@ -1,2 +1,4 @@
 *.aterm
 /ebnf.example/example_1.pp.ebnf
+.project
+.settings/*
