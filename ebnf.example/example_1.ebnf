@@ -1,1 +1,1 @@
-test_ ::= =>;
+test_ ::= {*,* identifier_second};

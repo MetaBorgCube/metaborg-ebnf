@@ -1,0 +1,16 @@
+module test
+
+language ebnf
+start symbol Rhs
+
+test parse success choice [[
+	identifier_first | identifier_second
+]] parse to [[identifier_first | identifier_second]]
+
+test parse success choice multiple [[
+	identifier_first | identifier_second | identifier_third
+]] parse to [[identifier_first | identifier_second | identifier_third]]
+
+test parse fails no right hand side [[
+	identifier_first |
+]] parse fails

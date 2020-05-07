@@ -1,0 +1,12 @@
+module test
+
+language ebnf
+start symbol Rhs
+
+test parse success sequence [[
+	identifier_first identifier_second
+]] parse to [[identifier_first identifier_second]]
+
+test parse success sequence multiple [[
+	identifier_first identifier_second identifier_third
+]] parse to [[identifier_first identifier_second identifier_third]]
