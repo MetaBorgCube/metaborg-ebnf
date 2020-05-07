@@ -10,7 +10,7 @@ lexical syntax
   ID             = Letter+ "_" (Letter | "_")*
   Terminal		 = (Character)+
   
-  Delimiter = SingleDelimiter | CompoundDelimiter
+  Delimiter         = SingleDelimiter | CompoundDelimiter
   SingleDelimiter   = "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "!"
   CompoundDelimiter = "=>" | ".." | ":=" | "/=" | ">=" | "<=" | "<<" | ">>" | "<>"
 
