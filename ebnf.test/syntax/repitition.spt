@@ -12,5 +12,5 @@ test parse success repition multiple [[
 ]] parse to [[{identifier_first identifier_second}]]
 
 test parse success repition with terminal [[
-	{*,* identifier_second}
-]] parse to [[{*,* identifier_second}]]
+	{, identifier_second}
+]] parse to [[{, identifier_second}]]

@@ -22,16 +22,17 @@ context-free syntax
   Term.Option = <[<Term>]>
   Term.Repetition = <{<Term>}>
   Term.Sequence = <<Term> <Term>> {left}
-  //Term.Group = <(<Term>)>
   
   Term.Identifier = <<ID>>
-  Term.Terminal = <*<Terminal>*>
+  Term.Terminal = <<Terminal>>
+  Term.Delimiter = <<Delimiter>>
  
 
 context-free priorities
 
 	Term.Identifier
+	> Term.Terminal
+	> Term.Delimiter
 	> Term.Choice
 	> {Term.Option Term.Repetition}
-	> Term.Terminal
 	> Term.Sequence
