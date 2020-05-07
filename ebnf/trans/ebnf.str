@@ -14,3 +14,17 @@ rules // Debugging
     with
       filename := <guarantee-extension(|"aterm")> path
     ; result   := node
+
+  debug-show-sdf3:
+  	(node, _, _, path, project-path) -> (filename, result)
+  	with
+  	  filename := <guarantee-extension(|"sdf3")> path
+  	; result   := <to-sdf> node
+  	
+  to-sdf: Grammar(list) -> $[Hello, Grammar!
+  [<map(to-sdf)> list]]
+  
+  to-sdf: Definition(LhsIdentifier(name), rhs) -> $[[name] = <[<to-sdf> rhs]>
+  ]
+  
+  to-sdf: _ -> $[righthandside]
