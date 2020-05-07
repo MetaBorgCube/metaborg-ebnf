@@ -7,20 +7,6 @@ imports
 
   pp
 
-rules // Analysis
-
-  // single-file analysis
-  editor-analyze = stx-editor-analyze(id|"static-semantics", "grammarOK")
-  
-  // multi-file analysis
-//  editor-analyze = stx-editor-analyze(id|"static-semantics", "projectOk", "fileOk")
-
-rules // Editor Services
-
-  editor-resolve = stx-editor-resolve
-
-  editor-hover = stx-editor-hover
-
 rules // Debugging
 
   // Prints the abstract syntax ATerm of a selection.
