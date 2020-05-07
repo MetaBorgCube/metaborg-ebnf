@@ -6,8 +6,6 @@ imports
 
 language
 
-  observer : editor-analyze (constraint) // (multifile)
-
 references
 
   reference _ : editor-resolve

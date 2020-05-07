@@ -1,0 +1,8 @@
+module test
+
+language ebnf
+start symbol Term
+
+test parse success identifier with underscore [[
+	identifier_test
+]] parse to [[identifier_test]]

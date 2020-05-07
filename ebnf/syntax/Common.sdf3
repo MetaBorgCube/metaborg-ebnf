@@ -3,10 +3,16 @@ module Common
 lexical syntax
  
   Lower			 = [a-z]
-  Special		 = [\;\ ]
+
+  Letter		 = Lower
+  Character		 = Lower
   
-  Identifier     = Lower (Lower | "_")*
-  Terminal		 = (Lower | Special)+
+  ID             = Letter+ "_" (Letter | "_")*
+  Terminal		 = (Character)+
+  
+  Delimiter         = SingleDelimiter | CompoundDelimiter
+  SingleDelimiter   = "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "!"
+  CompoundDelimiter = "=>" | ".." | ":=" | "/=" | ">=" | "<=" | "<<" | ">>" | "<>"
 
   LAYOUT         = [\ \t\n\r] 
 
@@ -19,9 +25,9 @@ lexical restrictions
 
   // Ensure greedy matching for lexicals
   
-  Identifier	-/- [a-z\_]
-  Terminal		-/- [a-z\;]
-  
+  ID	        -/- [a-zA-Z\_]
+  Terminal		-/- [a-z]
+  Delimiter     -/- [\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\!]
   // EOF may not be followed by any char
   
   EOF           -/- ~[]

@@ -6,22 +6,33 @@ imports
 
 context-free start-symbols
   
-  Start
+  Start GrammarDef Lhs Rhs Term
 
 context-free syntax
   
-  Start.Grammar = <<{GrammarDef "\n"}*>>
+  Start.Grammar = <<{GrammarDef "\n"}+>>
   
-  GrammarDef.Definition = <<Lhs> ::= <Rhs>>
+  GrammarDef.Definition = <<Lhs> ::= <Rhs>;>
 
-  Lhs.Identifier = <<Identifier>>
+  Lhs.LhsIdentifier = <<ID>>
 
-  Rhs.Sequence = <<{Term " "}+>>
-
-  Term.Identifier = <<Identifier>>
+  Rhs.Rhs = <<Term>>
+  
+  Term.Choice = <<Term> | <Term>> {left}
+  Term.Option = <[<Term>]>
+  Term.Repetition = <{<Term>}>
+  Term.Sequence = <<Term> <Term>> {left}
+  
+  Term.Identifier = <<ID>>
   Term.Terminal = <<Terminal>>
+  Term.Delimiter = <<Delimiter>>
+ 
 
-  Term.Choice = <<Rhs> | <Rhs>>
-  Term.Opt = <[<Rhs>]>
-  Term.Rep = <{<Rhs>}>
-  Term.Grp = <(<Rhs>)>
+context-free priorities
+
+	Term.Identifier
+	> Term.Terminal
+	> Term.Delimiter
+	> Term.Choice
+	> {Term.Option Term.Repetition}
+	> Term.Sequence

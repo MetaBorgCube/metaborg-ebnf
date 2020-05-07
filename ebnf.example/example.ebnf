@@ -1,4 +1,6 @@
-
-test ::= testing
-simple_return_statement ::= return [expression];
-simple_return_statement ::= return; | return expression;
+aspect_clause ::= attribute_definition_clause
+| enumeration_representation_clause
+| record_representation_clause
+| at_clause;
+simple_return_statement ::= return [expression_];
+simple_return_statement ::= return | return expression_;

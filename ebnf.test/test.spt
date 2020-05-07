@@ -1,7 +1,0 @@
-module test
-
-language ebnf
-
-test parse [[
-  hello ebnf
-]] parse succeeds
