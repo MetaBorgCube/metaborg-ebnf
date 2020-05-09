@@ -21,8 +21,33 @@ rules // Debugging
   	  filename := <guarantee-extension(|"sdf3")> path
   	; result   := <to-sdf> node
   	
-  to-sdf: Grammar(list) -> $[Hello, Grammar!
+  to-sdf: Grammar(list) -> $[module ada
+
+imports
+  
+  Common
+
+context-free start-symbols
+  
+  [<to-start-symbols> list]
+
+context-free syntax
+  
   [<map(to-sdf)> list]]
+  
+rules
+  
+  to-start-symbols: defs -> s
+  	with
+  	  names := <map(to-start-symbol)> defs
+  	; sorted := <sort-list(LSort(gt))> names
+  	; uniq := <uniq> sorted
+  	; <debug> uniq
+  	; s := <map(to-spaced); concat> uniq
+  to-spaced: i -> [i, " "]
+  to-start-symbol: Definition(LhsIdentifier(name), _) -> $[[name]]
+  
+rules
   
   to-sdf: Definition(LhsIdentifier(name), rhs) -> $[[name] = <[<to-sdf> rhs]>
   ]
