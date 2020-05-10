@@ -23,10 +23,6 @@ rules // Debugging
   	
   to-sdf: Grammar(list) -> $[module ada
 
-imports
-  
-  Common
-
 context-free start-symbols
   
   [<to-start-symbols> list]
@@ -37,19 +33,41 @@ context-free syntax
   
 rules
   
-  to-start-symbols: defs -> s
+  to-start-symbols: defs -> starts
   	with
   	  names := <map(to-start-symbol)> defs
   	; sorted := <sort-list(LSort(gt))> names
   	; uniq := <uniq> sorted
-  	; <debug> uniq
-  	; s := <map(to-spaced); concat> uniq
+  	; format := <map(format-identifier)> uniq
+  	; starts := <map(to-spaced); concat> format
   to-spaced: i -> [i, " "]
   to-start-symbol: Definition(LhsIdentifier(name), _) -> $[[name]]
   
 rules
   
-  to-sdf: Definition(LhsIdentifier(name), rhs) -> $[[name] = <[<to-sdf> rhs]>
+  to-sdf: Definition(LhsIdentifier(i), Rhs(rhs)) -> $[[<format-identifier> i] = <[<to-sdf> rhs]>
   ]
   
-  to-sdf: _ -> $[righthandside]
+//  to-sdf: Choice(o1, o2) -> [$[[<to-sdf> o1]], $[[<to-sdf> o2]]]
+//  to-sdf: Option(o) -> [$[], $[[o]]]
+//  to-sdf: Repetition(r) -> $[]
+  to-sdf: Sequence(s1, s2) -> $[[<to-sdf> s1] [<to-sdf> s2]]
+
+  to-sdf: Identifier(i) -> $[<[<format-identifier> i]>]
+  to-sdf: Terminal(t) -> $[[t]]
+  to-sdf: Delimiter(d) -> $[[d]]
+  
+//  check-list: [h|t] -> 
+//  check-list: 
+  
+  format-identifier: i -> name
+    with
+      chars  := <explode-string> i
+      ; split  := <split-at(|1)> chars
+      ; first  := <Fst; index(|1); to-upper> split
+      ; length := <Snd; implode-string; string-length; int-subt(|1)> split
+      ; end    := <Snd; split-at(|length); Fst> split
+      ; name   := <implode-string> [first|end]
+  
+  
+  
