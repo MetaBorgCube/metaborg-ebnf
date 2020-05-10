@@ -36,6 +36,7 @@ context-free syntax
   
 rules
   
+  // Extracts all the left-hand side start symbols from the grammar
   to-start-symbols: defs -> starts
   	with
   	  names := <map(to-start-symbol)> defs
@@ -63,14 +64,15 @@ rules
 //  check-list: [h|t] -> 
 //  check-list: 
   
+  // Uppercases the first letter and removes the trailing _
   format-identifier: i -> name
     with
       chars  := <explode-string> i
-      ; split  := <split-at(|1)> chars
-      ; first  := <Fst; index(|1); to-upper> split
-      ; length := <Snd; implode-string; string-length; int-subt(|1)> split
-      ; end    := <Snd; split-at(|length); Fst> split
-      ; name   := <implode-string> [first|end]
+      ; split  := <split-at(|1)> chars // Splits at index 1 into two tuples
+      ; first  := <Fst; index(|1); to-upper> split // Gets the first character and uppercases it
+      ; length := <Snd; implode-string; string-length; int-subt(|1)> split // Gets the length of the remaining part
+      ; end    := <Snd; split-at(|length); Fst> split // Splits at second to last character and selects the first part
+      ; name   := <implode-string> [first|end] // Joins the two strings into a single word again
   
   
   
