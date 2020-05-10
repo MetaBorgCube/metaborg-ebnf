@@ -19,9 +19,12 @@ rules // Debugging
   	(node, _, _, path, project-path) -> (filename, result)
   	with
   	  filename := <guarantee-extension(|"sdf3")> path
-  	; result   := <to-sdf> node
+  	; result   := <to-sdf> (node, path)
   	
-  to-sdf: Grammar(list) -> $[module ada
+  to-sdf: (Grammar(list), path) -> template
+  with
+    file := <split-at-dot; Fst> path
+  ; template := $[module [file]
 
 context-free start-symbols
   
