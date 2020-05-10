@@ -49,30 +49,42 @@ rules
   
 rules
   
-  to-sdf: Definition(LhsIdentifier(i), Rhs(rhs)) -> $[[<format-identifier> i] = <[<to-sdf> rhs]>
+  // TODO: Add a .something at the end of each option. How do we achieve this?
+  // Creates a rule for each returned underlying grammar
+  to-sdf: Definition(LhsIdentifier(i), Rhs(r)) -> res
+    with
+      iden := <format-identifier> i
+    ; rhs  := <to-sdf> r
+	; res  := <map(format-definition(|iden)); concat-strings> rhs
+  format-definition(|i): r -> $[[i] = <[r]>
   ]
   
-//  to-sdf: Choice(o1, o2) -> [$[[<to-sdf> o1]], $[[<to-sdf> o2]]]
-//  to-sdf: Option(o) -> [$[], $[[o]]]
-//  to-sdf: Repetition(r) -> $[]
-  to-sdf: Sequence(s1, s2) -> $[[<to-sdf> s1] [<to-sdf> s2]]
+  // Combines both options from the underlying grammar
+  to-sdf: Choice(o1, o2) -> <concat> [<to-sdf> o1, <to-sdf> o2]
 
-  to-sdf: Identifier(i) -> $[<[<format-identifier> i]>]
-  to-sdf: Terminal(t) -> $[[t]]
-  to-sdf: Delimiter(d) -> $[[d]]
+  // Adds an empty option for the grammar
+  to-sdf: Option(o) -> [$[]|<to-sdf> o]
+
+// TODO: Implement repetition
+//  to-sdf: Repetition(r) -> $[[]]
+
+  // Creates options of all possible combinations considered in the underlying grammars
+  to-sdf: Sequence(s1, s2) -> res
+    with
+      res := <list-combinations; map(format-sequence)> [<to-sdf> s1, <to-sdf> s2]
+  format-sequence: [a, b] -> $[[a] [b]]
+
+  to-sdf: Identifier(i) -> [$[<[<format-identifier> i]>]]
+  to-sdf: Terminal(t) -> [$[[t]]]
+  to-sdf: Delimiter(d) -> [$[[d]]]
   
-//  check-list: [h|t] -> 
-//  check-list: 
-  
+  // TODO: Remove the _ from the identifiers, sdf3 doesn't allow for an underscore
   // Uppercases the first letter and removes the trailing _
   format-identifier: i -> name
     with
       chars  := <explode-string> i
       ; split  := <split-at(|1)> chars // Splits at index 1 into two tuples
       ; first  := <Fst; index(|1); to-upper> split // Gets the first character and uppercases it
-      ; length := <Snd; implode-string; string-length; int-subt(|1)> split // Gets the length of the remaining part
-      ; end    := <Snd; split-at(|length); Fst> split // Splits at second to last character and selects the first part
-      ; name   := <implode-string> [first|end] // Joins the two strings into a single word again
-  
+      ; name   := <implode-string; rtrim-chars(?'_')> [first|<Snd> split]  
   
   
