@@ -6,6 +6,8 @@ imports
   pp
   outline
   analysis
+  signatures/ebnf-sig
+  libspoofax/stratego/debug
 
 rules // Debugging
   
@@ -82,9 +84,9 @@ rules
   // Uppercases the first letter and removes the trailing _
   format-identifier: i -> name
     with
-      chars  := <explode-string> i
-      ; split  := <split-at(|1)> chars // Splits at index 1 into two tuples
-      ; first  := <Fst; index(|1); to-upper> split // Gets the first character and uppercases it
-      ; name   := <implode-string; rtrim-chars(?'_')> [first|<Snd> split]  
+      chars  		:= <explode-string> i
+      ; split  		:=  <split-at(|1)> chars // Splits at index 1 into two tuples
+      ; first  		:= <Fst; index(|1); to-upper> split // Gets the first character and uppercases it
+      ; name   		:= <implode-string; string-replace(|"_", "")> [first|<Snd> split]
   
   
