@@ -32,6 +32,7 @@ context-free priorities
 	Term.Identifier
 	> Term.Terminal
 	> Term.Delimiter
+	> Term.Sequence
 	> Term.Choice
 	> {Term.Option Term.Repetition}
-	> Term.Sequence
+	
