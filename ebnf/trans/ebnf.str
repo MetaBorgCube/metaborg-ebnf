@@ -51,16 +51,17 @@ rules
   
 rules
   
-  // TODO: Add a .something at the end of each option. How do we achieve this?
   // Creates a rule for each returned underlying grammar
   to-sdf: Definition(LhsIdentifier(i), Rhs(r)) -> res
     with
       iden := <format-identifier> i
     ; rhs  := <to-sdf> r
 	; res  := <map(format-definition(|iden)); concat-strings> rhs
-  format-definition(|i): r -> $[[i] = <[r]>
+  format-definition(|i): r -> $[[i].[constr] = <[r]>
   ]
-  
+    with
+      constr := <newname> i
+      
   // Combines both options from the underlying grammar
   to-sdf: Choice(o1, o2) -> <concat> [<to-sdf> o1, <to-sdf> o2]
 
@@ -80,7 +81,6 @@ rules
   to-sdf: Terminal(t) -> [$[[t]]]
   to-sdf: Delimiter(d) -> [$[[d]]]
   
-  // TODO: Remove the _ from the identifiers, sdf3 doesn't allow for an underscore
   // Uppercases the first letter and removes the trailing _
   format-identifier: i -> name
     with

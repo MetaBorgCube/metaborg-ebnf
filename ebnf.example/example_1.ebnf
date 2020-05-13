@@ -1,1 +1,1 @@
-test_ ::= return | identifier_;
+expression_boolean ::= false | true;
