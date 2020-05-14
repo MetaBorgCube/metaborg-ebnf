@@ -59,13 +59,14 @@ rules
 rules
   
   // Creates a rule for each returned underlying grammar
-  to-sdf: Definition(LhsIdentifier(i), Rhs(r)) -> (<concat-strings> [res, repsRes], repStarts)
+  to-sdf: Definition(LhsIdentifier(i), Rhs(r)) -> (<concat-strings> [res, repsRes, $[
+  ]], repStarts)
     with
       iden 				:= <format-identifier> i
     ; (prods, reps)  	:= <to-sdf> r
 	; res  				:= <map(format-definition(|iden)); concat-strings> prods
 	; repsRes			:= <map(format-repitition-definition(|iden)); concat-strings> reps
-	; repStarts			:= <ppdebug0> <map(to-spaced); concat> <map(Fst)> reps
+	; repStarts			:= <map(to-spaced); concat> <map(Fst)> reps
 	
   format-definition(|i): r -> $[[i].[constr] = <[r]>
   ]

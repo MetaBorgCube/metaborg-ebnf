@@ -1,4 +1,4 @@
 if_expression ::=
-              if condition then dependent_expression
+              if condition_ then dependent_expression
               {elsif condition then dependent_expression}
-              [else dependent_expression];
+              [else dependent_expression]
