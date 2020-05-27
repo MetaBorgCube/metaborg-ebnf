@@ -103,6 +103,7 @@ rules
 
   to-sdf: Identifier(i) -> ([$[<[<format-identifier> i]>]], [])
   to-sdf: Terminal(t) -> ([$[[t]]], [])
+  to-sdf: Keyword(k) -> ([$[[k]]], [])
   to-sdf: Delimiter(d) -> ([$[[d]]], [])
   
   // Uppercases the first letter and removes the trailing _,

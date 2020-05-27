@@ -10,11 +10,12 @@ lexical syntax
   
   ID             = Lower+ "_" (Lower | "_")*
   Terminal		 = (Character)+ | Digit
+  Keyword 		 = "By_Entry" | "By_Protected_Procedure"
   
   Delimiter         = SingleDelimiter | CompoundDelimiter
-  SingleDelimiter   = "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "!" | "#" | "\"" | "'"
-  CompoundDelimiter = "=>" | ".." | ":=" | "/=" | ">=" | "<=" | "<<" | ">>" | "<>" | "--"
-
+  SingleDelimiter   = "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "!" | "#" | "\"" | "'" | "\\|"
+  CompoundDelimiter = "=>" | ".." | ":=" | "/=" | ">=" | "<=" | "<<" | ">>" | "<>" | "--" | "**"
+  
   LAYOUT         = [\ \t\n\r] 
 
   LAYOUT         = "//" ~[\n\r]* NewLineEOF 
@@ -22,7 +23,11 @@ lexical syntax
   NewLineEOF     = EOF 
   EOF            =  
 
+  ID = "By_Entry" {reject}
+  ID = "By_Protected_Procedure" {reject}
+
 lexical restrictions
+
 
   // Ensure greedy matching for lexicals
   

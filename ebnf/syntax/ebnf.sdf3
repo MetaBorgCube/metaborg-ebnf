@@ -25,6 +25,7 @@ context-free syntax
   
   Term.Identifier = <<ID>>
   Term.Terminal = <<Terminal>>
+  Term.Keyword = <<Keyword>>
   Term.Delimiter = <<Delimiter>>
 
 context-free priorities
