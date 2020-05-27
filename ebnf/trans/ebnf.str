@@ -107,14 +107,15 @@ rules
   
   // Uppercases the first letter and removes the trailing _,
   // if the string has a double _, only the part after that is used
-//  format-identifier: i -> name
-//  	with
-//  	  <if(is-substring("__"), true, false)> i
-//	  ; name := <split-before; Snd; format-identifier> (i, "__")
+  format-identifier: i -> name
+  	where
+  	  <is-substring(!"__")> i
+	  ; name := <split-after; Snd; format-identifier> (i, "__")
+	  
   format-identifier: i -> name
     with
-  	  <if(is-substring("__"), false)> i
-      ; chars  		:= <explode-string> i
+    not (<is-substring(!"__")> i)
+       ;chars  		:= <explode-string> i
       ; split  		:=  <split-at(|1)> chars // Splits at index 1 into two tuples
       ; first  		:= <Fst; index(|1); to-upper> split // Gets the first character and uppercases it
       ; name   		:= <implode-string; string-replace(|"_", "")> [first|<Snd> split]
