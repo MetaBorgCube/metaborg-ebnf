@@ -26,10 +26,10 @@ rules // Debugging
   to-sdf: (Grammar(defs), path) -> template
   with
       	file 					:= <split-at-dot; Fst> path
-      ;	defStarts				:= <ppdebug1> <to-start-symbols> defs
+      ;	defStarts				:= <to-start-symbols> defs
 	  ; syntaxAndRepStarts		:= <map(to-sdf)> defs
 	  ; syntax					:= <map(Fst)> syntaxAndRepStarts
-	  ; repStarts				:= <ppdebug0> <map(to-spaced); flatten-list> <map(Snd)> syntaxAndRepStarts
+	  ; repStarts				:= <map(to-spaced); flatten-list> <map(Snd)> syntaxAndRepStarts
       ; starts					:= <concat> [defStarts, repStarts]
       ; template				:= 
 
@@ -105,10 +105,16 @@ rules
   to-sdf: Terminal(t) -> ([$[[t]]], [])
   to-sdf: Delimiter(d) -> ([$[[d]]], [])
   
-  // Uppercases the first letter and removes the trailing _
+  // Uppercases the first letter and removes the trailing _,
+  // if the string has a double _, only the part after that is used
+//  format-identifier: i -> name
+//  	with
+//  	  <if(is-substring("__"), true, false)> i
+//	  ; name := <split-before; Snd; format-identifier> (i, "__")
   format-identifier: i -> name
     with
-      chars  		:= <explode-string> i
+  	  <if(is-substring("__"), false)> i
+      ; chars  		:= <explode-string> i
       ; split  		:=  <split-at(|1)> chars // Splits at index 1 into two tuples
       ; first  		:= <Fst; index(|1); to-upper> split // Gets the first character and uppercases it
       ; name   		:= <implode-string; string-replace(|"_", "")> [first|<Snd> split]
