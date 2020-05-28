@@ -124,7 +124,7 @@ discrete_range ::= discrete__subtype_indication | range_
 
 discriminant_part ::= unknown_discriminant_part | known_discriminant_part
 
-unknown_discriminant_part ::= (<>)
+unknown_discriminant_part ::= ( <> )
 
 known_discriminant_part ::= (discriminant_specification {; discriminant_specification})
 
@@ -135,7 +135,7 @@ default_expression ::= expression_
 
 discriminant_constraint ::= (discriminant_association {, discriminant_association})
 
-discriminant_association ::= [discriminant__selector_name {| discriminant__selector_name} =>] expression_
+discriminant_association ::= [discriminant__selector_name {\| discriminant__selector_name} =>] expression_
 
 record_type_definition ::= [[abstract] tagged] [limited] record_definition
 
@@ -161,7 +161,7 @@ variant_part ::= case discriminant__direct_name is
 variant_ ::= when discrete_choice_list =>
         component_list
 
-discrete_choice_list ::= discrete_choice {| discrete_choice}
+discrete_choice_list ::= discrete_choice {\| discrete_choice}
 
 discrete_choice ::= choice_expression | discrete__subtype_indication | range_ | others
 
@@ -258,7 +258,7 @@ record_component_association ::=
                              | component_choice_list => <>
 
 component_choice_list ::=
-                      component__selector_name {| component__selector_name}
+                      component__selector_name {\| component__selector_name}
                       | others
 
 extension_aggregate ::=
@@ -272,7 +272,7 @@ array_aggregate ::=
 positional_array_aggregate ::=
                            (expression_ , expression_ {, expression_})
                            | (expression_ {, expression_}, others => expression_)
-                           | (expression_ {, expression_}, others => <>)
+                           | (expression_ {, expression_}, others => <> )
 
 named_array_aggregate ::=
                       (array_component_association {, array_component_association})
@@ -301,7 +301,7 @@ relation_ ::=
          simple_expression [relational_operator simple_expression]
          | simple_expression [not] in membership_choice_list
 
-membership_choice_list ::= membership_choice {| membership_choice}
+membership_choice_list ::= membership_choice {\| membership_choice}
 
 membership_choice ::= choice_expression | range_ | subtype_mark
 
@@ -320,9 +320,9 @@ logical_operator ::= and | or | xor
 
 relational_operator ::= = | /= | < | <= | > | >=
 
-binary_adding_operator ::= + | – | &
+binary_adding_operator ::= + | - | &
 
-unary_adding_operator ::= + | –
+unary_adding_operator ::= + | -
 
 multiplying_operator ::= * | / | mod | rem
 
@@ -358,7 +358,7 @@ type_conversion ::=
                 | subtype_mark (name_)
 
 qualified_expression ::=
-                     subtype_mark '(expression_) | subtype_mark ' aggregate_
+                     subtype_mark ' (expression_) | subtype_mark ' aggregate_
 
 allocator_ ::=
           new [subpool_specification] subtype_indication
@@ -838,7 +838,7 @@ handled_sequence_of_statements ::=
                                {exception_handler}]
 
 exception_handler ::=
-                  when [choice_parameter_specification :] exception_choice {| exception_choice} =>
+                  when [choice_parameter_specification :] exception_choice {\| exception_choice} =>
                   sequence_of_statements
 
 choice_parameter_specification ::= defining_identifier
@@ -923,7 +923,7 @@ formal_private_type_definition ::= [[abstract] tagged] [limited] private
 formal_derived_type_definition ::=
                                [abstract] [limited | synchronized] new subtype_mark [[and interface_list]with private]
 
-formal_discrete_type_definition ::= (<>)
+formal_discrete_type_definition ::= ( <> )
 
 formal_signed_integer_type_definition ::= range <>
 
@@ -961,7 +961,7 @@ formal_package_declaration ::=
                            [aspect_specification];
 
 formal_package_actual_part ::=
-                           ([others =>] <>)
+                           ([others =>] <> )
                            | [generic_actual_part]
                            | (formal_package_association {, formal_package_association} [, others => <>])
 
