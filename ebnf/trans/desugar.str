@@ -1,0 +1,14 @@
+module desugar
+
+imports
+
+  src-gen/signatures/Common-sig
+  src-gen/signatures/ebnf-sig
+
+strategies
+
+  desugar-all = topdown(try(desugar))
+  
+rules
+
+  desugar: Delimiter("\\|") -> Delimiter("|")
