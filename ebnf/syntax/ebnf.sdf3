@@ -12,7 +12,7 @@ context-free syntax
   
   Start.Grammar = <<{GrammarDef "\n"}+>>
   
-  GrammarDef.Definition = <<Lhs> ::= <Rhs>;>
+  GrammarDef.Definition = <<Lhs> ::= <Rhs>>
 
   Lhs.LhsIdentifier = <<ID>>
 
@@ -25,14 +25,15 @@ context-free syntax
   
   Term.Identifier = <<ID>>
   Term.Terminal = <<Terminal>>
+  Term.Keyword = <<Keyword>>
   Term.Delimiter = <<Delimiter>>
- 
 
 context-free priorities
 
 	Term.Identifier
 	> Term.Terminal
 	> Term.Delimiter
+	> Term.Sequence
 	> Term.Choice
 	> {Term.Option Term.Repetition}
-	> Term.Sequence
+	
