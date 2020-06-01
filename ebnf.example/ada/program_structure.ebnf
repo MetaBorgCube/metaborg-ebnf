@@ -1,0 +1,56 @@
+Module program_structure
+
+compilation_ ::= {compilation_unit}
+
+compilation_unit ::= context_clause library_item
+                 | context_clause subunit_
+
+library_item ::= [private] library_unit_declaration
+             | library_unit_body
+             | [private] library_unit_renaming_declaration
+
+library_unit_declaration ::=
+                         subprogram_declaration
+                         | generic_declaration
+                         | package_declaration
+                         | generic_instantiation
+
+library_unit_renaming_declaration ::=
+                                  package_renaming_declaration
+                                  | generic_renaming_declaration
+                                  | subprogram_renaming_declaration
+
+library_unit_body ::= subprogram_body | package_body
+
+parent_unit_name ::= name_
+
+context_clause ::= {context_item}
+
+context_item ::= with_clause | use_clause
+
+with_clause ::= limited_with_clause | nonlimited_with_clause
+
+limited_with_clause ::= limited [private] with library_unit__name {, library_unit__name};
+
+nonlimited_with_clause ::= [private] with library_unit__name {, library_unit__name};
+
+body_stub ::= subprogram_body_stub | package_body_stub | task_body_stub | protected_body_stub
+
+subprogram_body_stub ::=
+                     [overriding_indicator]
+                     subprogram_specification is separate
+                     [aspect_specification];
+
+package_body_stub ::=
+                  package body defining_identifier is separate
+                  [aspect_specification];
+
+task_body_stub ::=
+               task body defining_identifier is separate
+               [aspect_specification];
+
+protected_body_stub ::=
+                    protected body defining_identifier is separate
+                    [aspect_specification];
+
+subunit_ ::= separate (parent_unit_name) proper_body

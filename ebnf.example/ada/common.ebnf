@@ -1,3 +1,5 @@
+Module common
+
 identifier_ ::= identifier_start {identifier_start | identifier_extend}
 
 identifier_start ::=

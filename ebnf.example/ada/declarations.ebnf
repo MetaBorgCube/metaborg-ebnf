@@ -1,0 +1,181 @@
+Module declarations
+
+type_declaration ::= full_type_declaration
+                 | incomplete_type_declaration
+                 | private_type_declaration
+                 | private_extension_declaration
+
+full_type_declaration ::=
+                      type defining_identifier [known_discriminant_part] is type_definition
+                      [aspect_specification];
+                      | task_type_declaration
+                      | protected_type_declaration
+
+type_definition ::=
+                enumeration_type_definition
+                | real_type_definition
+                | record_type_definition
+                | derived_type_definition
+                | integer_type_definition
+                | array_type_definition
+                | access_type_definition
+                | interface_type_definition
+
+subtype_declaration ::=
+                    subtype defining_identifier is subtype_indication
+                    [aspect_specification];
+
+subtype_indication ::= [null_exclusion] subtype_mark [constraint_]
+
+subtype_mark ::= subtype_name
+
+constraint_ ::= scalar_constraint | composite_constraint
+
+scalar_constraint ::= range_constraint | digits_constraint | delta_constraint
+
+composite_constraint ::= index_constraint | discriminant_constraint
+
+object_declaration ::=
+                   defining_identifier_list : [aliased] [constant] subtype_indication [:= expression_]
+                   [aspect_specification];
+                   | defining_identifier_list : [aliased] [constant] access_definition [:= expression_]
+                   [aspect_specification];
+                   | defining_identifier_list : [aliased] [constant] array_type_definition [:= expression_]
+                   [aspect_specification];
+                   | single_task_declaration
+                   | single_protected_declaration
+
+defining_identifier_list ::= defining_identifier {, defining_identifier}
+
+number_declaration ::= defining_identifier_list : constant := static__expression ;
+
+derived_type_definition ::= [abstract] [limited] new parent__subtype_indication [[and interface_list] record_extension_part]
+
+range_constraint ::= range range_
+
+range_ ::= range_attribute_reference
+      | simple_expression .. simple_expression
+
+enumeration_type_definition ::= (enumeration_literal_specification {, enumeration_literal_specification})
+
+enumeration_literal_specification ::= defining_identifier | defining_character_literal
+
+defining_character_literal ::= character_literal
+
+integer_type_definition ::= signed_integer_type_definition | modular_type_definition
+
+signed_integer_type_definition ::= range static__simple_expression .. static__simple_expression
+
+modular_type_definition ::= mod static__expression
+
+real_type_definition ::= floating_point_definition | fixed_point_definition
+
+floating_point_definition ::= digits static__expression [real_range_specification]
+
+real_range_specification ::= range static__simple_expression .. static__simple_expression
+
+fixed_point_definition ::= ordinary_fixed_point_definition | decimal_fixed_point_definition
+
+ordinary_fixed_point_definition ::= delta static__expression real_range_specification
+
+decimal_fixed_point_definition ::= delta static__expression digits static__expression [real_range_specification]
+
+digits_constraint ::= digits static__expression [range_constraint]
+
+array_type_definition ::= unconstrained_array_definition | constrained_array_definition
+
+unconstrained_array_definition ::= array(index_subtype_definition {, index_subtype_definition}) of component_definition
+
+index_subtype_definition ::= subtype_mark range <>
+
+constrained_array_definition ::= array (discrete_subtype_definition {, discrete_subtype_definition}) of component_definition
+
+discrete_subtype_definition ::= discrete__subtype_indication | range_
+
+component_definition ::= [aliased] subtype_indication
+                     | [aliased] access_definition
+
+index_constraint ::= (discrete_range {, discrete_range})
+
+discrete_range ::= discrete__subtype_indication | range_
+
+discriminant_part ::= unknown_discriminant_part | known_discriminant_part
+
+unknown_discriminant_part ::= ( <> )
+
+known_discriminant_part ::= (discriminant_specification {; discriminant_specification})
+
+discriminant_specification ::= defining_identifier_list : [null_exclusion] subtype_mark [:= default_expression]
+                           | defining_identifier_list : access_definition [:= default_expression]
+
+default_expression ::= expression_
+
+discriminant_constraint ::= (discriminant_association {, discriminant_association})
+
+discriminant_association ::= [discriminant__selector_name {\| discriminant__selector_name} =>] expression_
+
+record_type_definition ::= [[abstract] tagged] [limited] record_definition
+
+record_definition ::= record
+                  component_list
+                  end record
+                  | null record
+
+component_list ::= component_item {component_item}
+               | {component_item} variant_part
+               | null;
+
+component_item ::= component_declaration | aspect_clause
+
+component_declaration ::= defining_identifier_list : component_definition [:= default_expression]
+                      [aspect_specification];
+
+variant_part ::= case discriminant__direct_name is
+             variant_
+             {variant_}
+             end case;
+
+variant_ ::= when discrete_choice_list =>
+        component_list
+
+discrete_choice_list ::= discrete_choice {\| discrete_choice}
+
+discrete_choice ::= choice_expression | discrete__subtype_indication | range_ | others
+
+record_extension_part ::= with record_definition
+
+abstract_subprogram_declaration ::= [overriding_indicator]
+                                subprogram_specification is abstract
+                                [aspect_specification];
+
+interface_type_definition ::= [limited | task | protected | synchronized] interface [and interface_list]
+
+interface_list ::= interface__subtype_mark {and interface__subtype_mark}
+
+access_type_definition ::= [null_exclusion] access_to_object_definition
+                       | [null_exclusion] access_to_subprogram_definition
+
+access_to_object_definition ::= access [general_access_modifier] subtype_indication
+
+general_access_modifier ::= all | constant
+
+access_to_subprogram_definition ::= access [protected] procedure parameter_profile
+                                | access [protected] function parameter_and_result_profile
+
+null_exclusion ::= not null
+
+access_definition ::= [null_exclusion] access [constant] subtype_mark
+                  | [null_exclusion] access [protected] procedure parameter_profile
+                  | [null_exclusion] access [protected] function parameter_and_result_profile
+
+incomplete_type_declaration ::= type defining_identifier [discriminant_part] [is tagged];
+
+declarative_part ::= {declarative_item}
+
+declarative_item ::= basic_declarative_item | body
+
+basic_declarative_item ::= basic_declaration | aspect_clause | use_clause
+
+body_ ::= proper_body | body_stub
+
+proper_body ::= subprogram_body | package_body | task_body | protected_body

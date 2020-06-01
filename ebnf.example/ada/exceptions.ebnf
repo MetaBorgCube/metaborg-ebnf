@@ -1,0 +1,21 @@
+Module exceptions
+
+exception_declaration ::= defining_identifier_list : exception
+                      [aspect_specification];
+
+handled_sequence_of_statements ::=
+                               sequence_of_statements
+                               [exception
+                               exception_handler
+                               {exception_handler}]
+
+exception_handler ::=
+                  when [choice_parameter_specification :] exception_choice {\| exception_choice} =>
+                  sequence_of_statements
+
+choice_parameter_specification ::= defining_identifier
+
+exception_choice ::= exception__name | others
+
+raise_statement ::= raise;
+                | raise exception__name [with string__expression];

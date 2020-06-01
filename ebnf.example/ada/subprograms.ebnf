@@ -1,0 +1,86 @@
+Module subprograms
+
+subprogram_declaration ::=
+                       [overriding_indicator]
+                       subprogram_specification
+                       [aspect_specification];
+
+subprogram_specification ::=
+                         procedure_specification
+                         | function_specification
+
+procedure_specification ::= procedure defining_program_unit_name parameter_profile
+
+function_specification ::= function defining_designator parameter_and_result_profile
+
+designator_ ::= [parent_unit_name .] identifier_ | operator_symbol
+
+defining_designator ::= defining_program_unit_name | defining_operator_symbol
+
+defining_program_unit_name ::= [parent_unit_name .] defining_identifier
+
+operator_symbol ::= string_literal
+
+defining_operator_symbol ::= operator_symbol
+
+parameter_profile ::= [formal_part]
+
+parameter_and_result_profile ::=
+                             [formal_part] return [null_exclusion] subtype_mark
+                             | [formal_part] return access_definition
+
+formal_part ::=
+            (parameter_specification {; parameter_specification})
+parameter_specification ::=
+                        defining_identifier_list : [aliased] mode_ [null_exclusion] subtype_mark [:= default_expression]
+                        | defining_identifier_list : access_definition [:= default_expression]
+
+mode_ ::= [in] | in out | out
+
+subprogram_body ::=
+                [overriding_indicator]
+                subprogram_specification
+                [aspect_specification] is
+                declarative_part
+                begin
+                handled_sequence_of_statements
+                end [designator_];
+
+procedure_call_statement ::=
+                         procedure__name ;
+                         | procedure__prefix actual_parameter_part ;
+
+function_call ::=
+              function__name
+              | function__prefix actual_parameter_part
+
+actual_parameter_part ::=
+                      (parameter_association {, parameter_association})
+
+parameter_association ::=
+                      [formal_parameter__selector_name =>] explicit_actual_parameter
+
+explicit_actual_parameter ::= expression_ | variable__name
+
+simple_return_statement ::= return [expression_];
+
+extended_return_object_declaration ::=
+                                   defining_identifier : [aliased][constant] return_subtype_indication [:= expression_]
+
+extended_return_statement ::=
+                          return extended_return_object_declaration [do
+                          handled_sequence_of_statements
+                          end return];
+
+return_subtype_indication ::= subtype_indication | access_definition
+
+null_procedure_declaration ::=
+                           [overriding_indicator]
+                           procedure_specification is null
+                           [aspect_specification];
+
+expression_function_declaration ::=
+                                [overriding_indicator]
+                                function_specification is
+                                (expression_)
+                                [aspect_specification];
