@@ -6,6 +6,7 @@ imports
   pp
   outline
   analysis
+  desugar
   signatures/ebnf-sig
   libspoofax/stratego/debug
 
@@ -16,6 +17,11 @@ rules // Debugging
     with
       filename := <guarantee-extension(|"aterm")> path
     ; result   := node
+
+  debug-desugar-ast: (_, _, ast, path, project-path) -> (filename, result)
+    with 
+      filename := <guarantee-extension(|"desugared.aterm")> path
+    ; result   := <desugar-all> ast
 
   debug-show-sdf3:
   	(node, _, _, path, project-path) -> (filename, result)

@@ -18,9 +18,10 @@ menus
   
   menu: "Syntax" (openeditor)
     
-    action: "Format"          = editor-format (source)
-    action: "Show parsed AST" = debug-show-aterm (source)
-    action: "Show SDF3 AST"	  = debug-show-sdf3 (source)
+    action: "Format"             = editor-format (source)
+    action: "Show parsed AST"    = debug-show-aterm (source)
+    action: "Show desugared AST" = debug-desugar-ast (source)
+    action: "Show SDF3 AST"	     = debug-show-sdf3 (source)
 
 views
   
