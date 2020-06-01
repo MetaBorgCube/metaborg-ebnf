@@ -1,0 +1,107 @@
+module to-sdf
+
+imports
+  signatures/ebnf-sig
+
+rules
+  to-sdf: (Grammar(modules), path) -> template
+    with
+      	file			:= <split-at-dot; Fst> path
+      ; parts			:= <map(to-sdf)> modules
+      ; partsString		:= <concat-strings> parts
+      ; template		:= $[module [file]
+[partsString]]
+      
+  to-sdf: Mod(_, defs) -> template
+    with
+   		defStarts				:= <to-start-symbols> defs
+	  ; syntaxAndRepStarts		:= <map(to-sdf)> defs
+	  ; syntax					:= <map(Fst)> syntaxAndRepStarts
+	  ; repStarts				:= <map(to-spaced); flatten-list> <map(Snd)> syntaxAndRepStarts
+      ; starts					:= <concat> [defStarts, repStarts]
+      ; template 				:= $[
+context-free start-symbols
+  
+  [starts]
+
+context-free syntax
+  
+  [syntax]]
+  
+rules
+  
+  // Extracts all the left-hand side start symbols from the grammar
+  to-start-symbols: modules -> starts
+  	with
+  	  names := <map(to-start-symbol)> modules
+  	; sorted := <sort-list(LSort(gt))> names
+  	; uniq := <uniq> sorted
+  	; format := <map(format-identifier)> uniq
+  	; starts := <map(to-spaced); concat> format
+  to-spaced: i -> [i, " "]
+  to-start-symbol: Definition(LhsIdentifier(name), _) -> $[[name]]
+  
+rules
+
+  // Creates a rule for each returned underlying grammar
+  to-sdf: Definition(LhsIdentifier(i), Rhs(r)) -> (<concat-strings> [res, repsRes, $[
+  ]], repStarts)
+    with
+      iden 				:= <format-identifier> i
+    ; (prods, reps)  	:= <to-sdf> r
+	; res  				:= <map(format-definition(|iden)); concat-strings> prods
+	; repsRes			:= <map(format-repitition-definition(|iden)); concat-strings> reps
+	; repStarts			:= <map(to-spaced); concat> <map(Fst)> reps
+	
+  format-definition(|i): r -> $[[i].[constr] = <[r]>
+  ]
+    with
+      constr := <newname> i
+  format-repitition-definition(|i): (repIden, repBody) -> $[[repIden].[constr] = <[repBody]>
+  ]
+    with
+      constr := <newname> <concat-strings> [i, repIden]
+      
+  // Combines both options from the underlying grammar
+  to-sdf: Choice(t1, t2) -> (<concat> [res1, res2] , <concat> [reps1, reps2])
+    with
+      	(res1, reps1) 	:= <to-sdf> t1
+      ; (res2, reps2) 	:= <to-sdf> t2
+
+  // Adds an empty option for the grammar
+  to-sdf: Option(t) -> ([$[]|res] , reps)
+    with
+      (res, reps) 	:= <to-sdf> t
+
+  to-sdf: Repetition(r) ->  ([$[<[repIden]*>]], <concat> [reps, [(repIden, repBody)]])
+    with (res, reps) := <to-sdf> r
+    ;	 repBody	 := res
+    ;	 repIden	 := <newname> "Repitition"
+
+  // Creates options of all possible combinations considered in the underlying grammars
+  to-sdf: Sequence(t1, t2) -> (res, <concat> [reps1, reps2])
+    with
+      (res1 , reps1) 	:= <to-sdf> t1
+      ; (res2, reps2) 	:= <to-sdf> t2
+      ; res				:= <list-combinations; map(format-sequence)> [res1, res2]
+  format-sequence: [a, b] -> $[[a] [b]]
+
+  to-sdf: Identifier(i) -> ([$[<[<format-identifier> i]>]], [])
+  to-sdf: Terminal(t) -> ([$[[t]]], [])
+  to-sdf: Keyword(k) -> ([$[[k]]], [])
+  to-sdf: Delimiter(d) -> ([$[[d]]], [])
+  
+  // Uppercases the first letter and removes the trailing _,
+  // if the string has a double _, only the part after that is used
+  format-identifier: i -> name
+  	where
+  	  <is-substring(!"__")> i
+	  ; name := <split-after; Snd; format-identifier> (i, "__")
+	  
+  format-identifier: i -> name
+    with
+    not (<is-substring(!"__")> i)
+       ;chars  		:= <explode-string> i
+      ; split  		:=  <split-at(|1)> chars // Splits at index 1 into two tuples
+      ; first  		:= <Fst; index(|1); to-upper> split // Gets the first character and uppercases it
+      ; name   		:= <implode-string; string-replace(|"_", "")> [first|<Snd> split]
