@@ -63,7 +63,7 @@ rules
   to-start-symbol: Definition(LhsIdentifier(name), _) -> $[[name]]
   
 rules
-  
+
   // Creates a rule for each returned underlying grammar
   to-sdf: Definition(LhsIdentifier(i), Rhs(r)) -> (<concat-strings> [res, repsRes, $[
   ]], repStarts)
