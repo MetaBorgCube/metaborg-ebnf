@@ -4,13 +4,19 @@ imports
   signatures/ebnf-sig
 
 rules
-  to-sdf: (Grammar(modules), path) -> template
+  to-sdf: (Modules(mods), path) -> template
     with
       	file			:= <split-at-dot; Fst> path
-      ; parts			:= <map(to-sdf)> modules
+      ; parts			:= <map(to-sdf)> mods
       ; partsString		:= <concat-strings> parts
       ; template		:= $[module [file]
 [partsString]]
+  to-sdf: (Grammar(defs), path) -> template
+    with
+      	file			:= <split-at-dot; Fst> path
+      ; part			:= <to-sdf> Mod("", defs)
+      ; template		:= $[module [file]
+[part]]
       
   to-sdf: Mod(_, defs) -> template
     with

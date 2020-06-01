@@ -1,5 +1,3 @@
-Module example_one
-
 if_expression ::=
               if condition_ then dependent_expression
               {elsif condition then dependent_expression}

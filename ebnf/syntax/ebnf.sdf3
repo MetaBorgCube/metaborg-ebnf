@@ -11,7 +11,8 @@ context-free start-symbols
 
 context-free syntax
   
-  Start.Grammar = <<{Module "\n"}+>>
+  Start.Modules = <<{Module "\n"}+>>
+  Start.Grammar = <<{GrammarDef "\n"}+>>
   
   Module.Mod = <Module <ModuleName> <{GrammarDef "\n"}+>>
   

@@ -1,5 +1,3 @@
-Module example
-
 aspect_clause ::= attribute_definition_clause
 | enumeration_representation_clause
 | record_representation_clause
