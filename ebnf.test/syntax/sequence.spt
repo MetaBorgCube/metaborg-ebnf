@@ -1,12 +1,14 @@
 module test
 
 language ebnf
-start symbol Rhs
+fixture [[
+	identifier_test ::= [[...]]
+]]
 
 test parse success sequence [[
 	identifier_first identifier_second
-]] parse to [[identifier_first identifier_second]]
+]] parse succeeds
 
 test parse success sequence multiple [[
 	identifier_first identifier_second identifier_third
-]] parse to [[identifier_first identifier_second identifier_third]]
+]] parse succeeds

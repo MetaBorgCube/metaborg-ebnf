@@ -14,11 +14,11 @@ rules
   to-sdf: (Grammar(defs), path) -> template
     with
       	file			:= <split-at-dot; Fst> path
-      ; part			:= <to-sdf> Mod("", defs)
+      ; part			:= <to-sdf> Module("", defs)
       ; template		:= $[module [file]
 [part]]
       
-  to-sdf: Mod(_, defs) -> template
+  to-sdf: Module(_, defs) -> template
     with
    		defStarts				:= <to-start-symbols> defs
 	  ; syntaxAndRepStarts		:= <map(to-sdf)> defs
