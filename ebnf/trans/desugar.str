@@ -7,8 +7,17 @@ imports
 
 strategies
 
-  desugar-all = topdown(try(desugar))
+  desugar-all = bottomup(try(desugar))
   
 rules
 
   desugar: Delimiter("\\|") -> Delimiter("|")
+
+  desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat> [l1, l2])
+  desugar: Sequence(a, Seq(l2)) -> Seq(<concat> [[a], l2])
+  desugar: Sequence(Seq(l1), b) -> Seq(<concat> [l1, [b]])
+  desugar: Sequence(a, b) -> Seq([a, b])
+  
+signature constructors
+
+  Seq : List(Term) -> Term
