@@ -1,0 +1,72 @@
+Module packages
+
+package_declaration ::= package_specification ;
+
+package_specification ::=
+                      package defining_program_unit_name
+                      [aspect_specification] is
+                      {basic_declarative_item}
+                      [private
+                      {basic_declarative_item}]
+                      end [[parent_unit_name .] identifier_]
+
+package_body ::=
+             package body defining_program_unit_name
+             [aspect_specification] is
+             declarative_part
+             [begin
+             handled_sequence_of_statements]
+             end [[parent_unit_name .] identifier_];
+
+private_type_declaration ::=
+                         type defining_identifier [discriminant_part] is [[abstract] tagged] [limited] private
+                         [aspect_specification];
+
+private_extension_declaration ::=
+                              type defining_identifier [discriminant_part] is
+                              [abstract] [limited | synchronized] new ancestor__subtype_indication
+                              [and interface_list] with private
+                              [aspect_specification];
+
+overriding_indicator ::= [not] overriding
+
+use_clause ::= use_package_clause | use_type_clause
+
+use_package_clause ::= use package__name {, package__name};
+
+use_type_clause ::= use [all] type subtype_mark {, subtype_mark};
+
+renaming_declaration ::=
+                     object_renaming_declaration
+                     | exception_renaming_declaration
+                     | package_renaming_declaration
+                     | subprogram_renaming_declaration
+                     | generic_renaming_declaration
+
+object_renaming_declaration ::=
+                            defining_identifier : [null_exclusion] subtype_mark renames object__name
+                            [aspect_specification];
+                            | defining_identifier : access_definition renames object__name
+                            [aspect_specification];
+
+exception_renaming_declaration ::= defining_identifier : exception renames exception__name
+                               [aspect_specification];
+
+package_renaming_declaration ::= package defining_program_unit_name renames package__name
+                             [aspect_specification];
+
+subprogram_renaming_declaration ::=
+                                [overriding_indicator]
+                                subprogram_specification renames callable_entity__name
+                                [aspect_specification];
+
+generic_renaming_declaration ::=
+                             generic package
+                             defining_program_unit_name renames generic_package__name
+                             [aspect_specification];
+                             | generic procedure
+                             defining_program_unit_name renames generic_procedure__name
+                             [aspect_specification];
+                             | generic function
+                             defining_program_unit_name renames generic_function__name
+                             [aspect_specification];

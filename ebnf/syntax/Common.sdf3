@@ -8,6 +8,7 @@ lexical syntax
   Character		 = Lower | Upper
   Digit			 = [0-9]
   
+  ModuleName	 = Lower (Lower | "_")*
   ID             = Lower+ "_" (Lower | "_")*
   Terminal		 = (Character)+ | Digit
   Keyword 		 = "By_Entry" | "By_Protected_Procedure"
@@ -32,6 +33,7 @@ lexical restrictions
   // Ensure greedy matching for lexicals
   
   ID	        -/- [a-zA-Z\_]
+  ModuleName    -/- [a-z\_]
   Terminal		-/- [a-z]
   Delimiter     -/- [\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\!]
   // EOF may not be followed by any char

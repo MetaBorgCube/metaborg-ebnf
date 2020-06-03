@@ -6,11 +6,14 @@ imports
 
 context-free start-symbols
   
-  Start GrammarDef Lhs Rhs Term
+  Start
 
 context-free syntax
   
+  Start.Modules = <<{Module "\n"}+>>
   Start.Grammar = <<{GrammarDef "\n"}+>>
+  
+  Module.Module = <Module <ModuleName> <{GrammarDef "\n"}+>>
   
   GrammarDef.Definition = <<Lhs> ::= <Rhs>>
 

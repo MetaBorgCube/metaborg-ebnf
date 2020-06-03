@@ -1,0 +1,164 @@
+Module names_and_expressions
+
+name_ ::= direct_name
+     | indexed_component
+     | selected_component
+     | type_conversion
+     | character_literal
+     | generalized_reference
+     | explicit_dereference
+     | slice_
+     | attribute_reference
+     | function_call
+     | qualified_expression
+     | generalized_indexing
+
+direct_name ::= identifier_ | operator_symbol
+
+prefix_ ::= name_ | implicit_dereference
+
+explicit_dereference ::= name_.all
+
+implicit_dereference ::= name_
+
+indexed_component ::= prefix_ (expression_ {, expression_})
+
+slice_ ::= prefix_ (discrete_range)
+
+selected_component ::= prefix_ . selector_name
+
+selector_name ::= identifier_ | character_literal | operator_symbol
+
+attribute_reference ::= prefix_ ' attribute_designator
+
+attribute_designator ::= identifier_ [(static__expression)]
+                     | Access | Delta | Digits | Mod
+
+range_attribute_reference ::= prefix_ ' range_attribute_designator
+
+range_attribute_designator ::= Range[(static__expression)]
+
+generalized_reference ::= reference_object__name
+
+generalized_indexing ::= indexable_container_object__prefix actual_parameter_part
+
+aggregate_ ::= record_aggregate | extension_aggregate | array_aggregate
+
+record_aggregate ::= (record_component_association_list)
+
+record_component_association_list ::=
+                                  record_component_association {, record_component_association}
+                                  | null record
+
+record_component_association ::=
+                             [component_choice_list =>] expression_
+                             | component_choice_list => <>
+
+component_choice_list ::=
+                      component__selector_name {\| component__selector_name}
+                      | others
+
+extension_aggregate ::=
+                    (ancestor_part with record_component_association_list)
+
+ancestor_part ::= expression_ | subtype_mark
+
+array_aggregate ::=
+                positional_array_aggregate | named_array_aggregate
+
+positional_array_aggregate ::=
+                           (expression_ , expression_ {, expression_})
+                           | (expression_ {, expression_}, others => expression_)
+                           | (expression_ {, expression_}, others => <> )
+
+named_array_aggregate ::=
+                      (array_component_association {, array_component_association})
+
+array_component_association ::=
+                            discrete_choice_list => expression_
+                            | discrete_choice_list => <>
+
+expression_ ::=
+           relation_ {and relation_}
+           | relation_ {or relation_}
+           | relation_ {xor relation_}
+           | relation_ {and then relation_}
+           | relation_ {or else relation}
+
+choice_expression ::=
+                  choice_relation {and choice_relation}
+                  | choice_relation {or choice_relation}
+                  | choice_relation {xor choice_relation}
+                  | choice_relation {and then choice_relation}
+                  | choice_relation {or else choice_relation}
+
+choice_relation ::=
+                simple_expression [relational_operator simple_expression]
+relation_ ::=
+         simple_expression [relational_operator simple_expression]
+         | simple_expression [not] in membership_choice_list
+
+membership_choice_list ::= membership_choice {\| membership_choice}
+
+membership_choice ::= choice_expression | range_ | subtype_mark
+
+simple_expression ::= [unary_adding_operator] term_ {binary_adding_operator term_}
+
+term_ ::= factor_ {multiplying_operator factor_}
+
+factor_ ::= primary_ [** primary_] | abs primary_ | not primary_
+
+primary_  ::=
+        numeric_literal | null | string_literal | aggregate_
+        | name_ | allocator_ | (expression_)
+        | (conditional_expression) | (quantified_expression)
+
+logical_operator ::= and | or | xor
+
+relational_operator ::= = | /= | < | <= | > | >=
+
+binary_adding_operator ::= + | - | &
+
+unary_adding_operator ::= + | -
+
+multiplying_operator ::= * | / | mod | rem
+
+highest_precedence_operator ::= ** | abs | not
+
+conditional_expression ::= if_expression | case_expression
+
+if_expression ::=
+              if condition_ then dependent__expression
+              {elsif condition_ then dependent__expression}
+              [else dependent__expression]
+
+condition_ ::= boolean__expression
+
+case_expression ::=
+                case selecting__expression is
+                case_expression_alternative {,
+                case_expression_alternative}
+
+case_expression_alternative ::=
+                            when discrete_choice_list =>
+                            dependent__expression
+
+quantified_expression ::= for quantifier_ loop_parameter_specification => predicate_
+                      | for quantifier_ iterator_specification => predicate_
+
+quantifier_ ::= all | some
+
+predicate_ ::= boolean__expression
+
+type_conversion ::=
+                subtype_mark (expression_)
+                | subtype_mark (name_)
+
+qualified_expression ::=
+                     subtype_mark ' (expression_) | subtype_mark ' aggregate_
+
+allocator_ ::=
+          new [subpool_specification] subtype_indication
+          | new [subpool_specification] qualified_expression
+
+subpool_specification ::= (subpool_handle__name)

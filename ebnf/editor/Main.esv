@@ -9,4 +9,3 @@ language
   extensions : ebnf
 
   provider : target/metaborg/stratego.ctree
-  provider : target/metaborg/stratego.jar

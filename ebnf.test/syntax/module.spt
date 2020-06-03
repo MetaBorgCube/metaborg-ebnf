@@ -1,0 +1,9 @@
+module test
+
+language ebnf
+
+test parse succeeds module [[
+	Module packages
+
+	package_declaration ::= package_specification ;
+]] parse succeeds

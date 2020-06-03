@@ -1,0 +1,122 @@
+Module generic_declarations
+
+generic_declaration ::= generic_subprogram_declaration | generic_package_declaration
+
+generic_subprogram_declaration ::=
+                               generic_formal_part subprogram_specification
+                               [aspect_specification];
+
+generic_package_declaration ::=
+                            generic_formal_part package_specification ;
+
+generic_formal_part ::= generic {generic_formal_parameter_declaration | use_clause}
+
+generic_formal_parameter_declaration ::=
+                                     formal_object_declaration
+                                     | formal_type_declaration
+                                     | formal_subprogram_declaration
+                                     | formal_package_declaration
+
+generic_instantiation ::=
+                      package defining_program_unit_name is
+                      new generic_package__name [generic_actual_part]
+                      [aspect_specification];
+                      | [overriding_indicator]
+                      procedure defining_program_unit_name is
+                      new generic_procedure__name [generic_actual_part]
+                      [aspect_specification];
+                      | [overriding_indicator]
+                      function defining_designator is
+                      new generic_function__name [generic_actual_part]
+                      [aspect_specification];
+
+generic_actual_part ::=
+                    (generic_association {, generic_association})
+
+generic_association ::=
+                    [generic_formal_parameter__selector_name =>] explicit_generic_actual_parameter
+
+explicit_generic_actual_parameter ::= expression | variable__name
+                                  | subprogram__name | entry__name | subtype_mark
+                                  | package_instance__name
+
+formal_object_declaration ::=
+                          defining_identifier_list : mode_ [null_exclusion] subtype_mark [:= default_expression]
+                          [aspect_specification];
+                          | defining_identifier_list : mode_ access_definition [:= default_expression]
+                          [aspect_specification];
+
+formal_type_declaration ::=
+                        formal_complete_type_declaration
+                        | formal_incomplete_type_declaration
+
+formal_complete_type_declaration ::=
+                                 type defining_identifier [discriminant_part] is formal_type_definition
+                                 [aspect_specification];
+
+formal_incomplete_type_declaration ::=
+                                   type defining_identifier [discriminant_part] [is tagged];
+
+formal_type_definition ::=
+                       formal_private_type_definition
+                       | formal_derived_type_definition
+                       | formal_discrete_type_definition
+                       | formal_signed_integer_type_definition
+                       | formal_modular_type_definition
+                       | formal_floating_point_definition
+                       | formal_ordinary_fixed_point_definition
+                       | formal_decimal_fixed_point_definition
+                       | formal_array_type_definition
+                       | formal_access_type_definition
+                       | formal_interface_type_definition
+
+formal_private_type_definition ::= [[abstract] tagged] [limited] private
+
+formal_derived_type_definition ::=
+                               [abstract] [limited | synchronized] new subtype_mark [[and interface_list]with private]
+
+formal_discrete_type_definition ::= ( <> )
+
+formal_signed_integer_type_definition ::= range <>
+
+formal_modular_type_definition ::= mod <>
+
+formal_floating_point_definition ::= digits <>
+
+formal_ordinary_fixed_point_definition ::= delta <>
+
+formal_decimal_fixed_point_definition ::= delta <> digits <>
+
+formal_array_type_definition ::= array_type_definition
+
+formal_access_type_definition ::= access_type_definition
+
+formal_interface_type_definition ::= interface_type_definition
+
+formal_subprogram_declaration ::= formal_concrete_subprogram_declaration
+                              | formal_abstract_subprogram_declaration
+
+formal_concrete_subprogram_declaration ::=
+                                       with subprogram_specification [is subprogram_default]
+                                       [aspect_specification];
+
+formal_abstract_subprogram_declaration ::=
+                                       with subprogram_specification is abstract [subprogram_default]
+                                       [aspect_specification];
+
+subprogram_default ::= default_name | <> | null
+
+default_name ::= name_
+
+formal_package_declaration ::=
+                           with package defining_identifier is new generic_package__name formal_package_actual_part
+                           [aspect_specification];
+
+formal_package_actual_part ::=
+                           ([others =>] <> )
+                           | [generic_actual_part]
+                           | (formal_package_association {, formal_package_association} [, others => <>])
+
+formal_package_association ::=
+                           generic_association
+                           | generic_formal_parameter__selector_name => <>

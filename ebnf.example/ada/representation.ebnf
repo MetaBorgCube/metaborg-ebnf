@@ -1,0 +1,57 @@
+Module representation
+
+aspect_clause ::= attribute_definition_clause
+              | enumeration_representation_clause
+              | record_representation_clause
+              | at_clause
+
+local_name ::= direct_name
+           | direct_name ' attribute_designator
+           | library_unit__name
+
+aspect_specification ::=
+                     with aspect_mark [=> aspect_definition] {,
+                     aspect_mark [=> aspect_definition]}
+
+aspect_mark ::= aspect__identifier ['Class]
+
+aspect_definition ::= name_ | expression_ | identifier_
+
+attribute_definition_clause ::=
+                            for local_name ' attribute_designator use expression_ ;
+                            | for local_name ' attribute_designator use name_ ;
+
+enumeration_representation_clause ::=
+                                  for first_subtype__local_name use enumeration_aggregate ;
+
+enumeration_aggregate ::= array_aggregate
+
+record_representation_clause ::=
+                             for first_subtype__local_name use
+                             record [mod_clause]
+                             {component_clause}
+                             end record;
+
+component_clause ::=
+                 component__local_name at position_ range first_bit .. last_bit ;
+
+position_ ::= static__expression
+
+first_bit ::= static__simple_expression
+
+last_bit ::= static__simple_expression
+
+code_statement ::= qualified_expression ;
+
+storage_pool_indicator ::= storage_pool__name | null
+
+restriction_ ::= restriction__identifier
+            | restriction_parameter__identifier => restriction_parameter_argument
+
+restriction_parameter_argument ::= name_ | expression_
+
+delta_constraint ::= delta static__expression [range_constraint]
+
+at_clause ::= for direct_name use at expression_ ;
+
+mod_clause ::= at mod static__expression ;
