@@ -25,6 +25,8 @@ rules // Debugging
     ; result   := <desugar-all> ast
 
   debug-show-sdf3:
-  	(node, _, _, path, project-path) -> result
+  	(_, _, ast, path, project-path) -> result
   	with
-  	 result   := <to-sdf> (node, path)
+  	  filename := <guarantee-extension(|"sdf3")> path
+  	; desugared:= <desugar-all> ast
+  	; result   := <to-sdf> (desugared, path)

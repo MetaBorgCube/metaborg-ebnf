@@ -3,6 +3,7 @@ module to-sdf
 imports
   signatures/ebnf-sig
   libspoofax/stratego/debug
+  desugar
 
 rules
   to-sdf: (Modules(mods), path) ->  (<concat> [filepaths, [mainfilename]], <concat> [files, [mainfile]])
@@ -104,23 +105,30 @@ rules
       ; (defs2, reps2) 	:= <to-sdf> t2
 
   // Adds an empty option for the grammar
+  to-sdf: Option(Identifier(i)) -> ([$[<[<format-identifier> i]?>]], [])
   to-sdf: Option(t) -> ([$[]|defs] , reps)
     with
       (defs, reps) 	:= <to-sdf> t
 
-  to-sdf: Repetition(r) ->  ([$[[repIden]*]], <concat> [reps, [(repIden, repBody)]])
-    with 
-    (res, reps) 			:= <to-sdf> r
-    ;	 repBody	 			:= res
-    ;	 repIden	 			:= <newname> "Repitition"
+  to-sdf: Repetition(Identifier(i)) -> ([$[<[<format-identifier> i]*>]],[])
+  
+  to-sdf: Repetition(r) ->  ([$[<[repIden]*>]], <concat> [reps, [(repIden, repBody)]])
+    with (defs, reps) := <to-sdf> r
+    ;	 repBody	 := defs
+    ;	 repIden	 := <newname> "Repitition"
 
   // Creates options of all possible combinations considered in the underlying grammars
-  to-sdf: Sequence(t1, t2) -> (defs, <concat> [reps1, reps2])
+  to-sdf: Seq(s) -> (d, repsr)
     with
-      (defs1 , reps1) 		:= <to-sdf> t1
-      ; (defs2, reps2) 		:= <to-sdf> t2
-      ; defs							:= <list-combinations; map(format-sequence)> [defs1, defs2]
-  format-sequence: [a, b] -> $[[a] [b]]
+      (defs, reps)	:= <map(to-sdf); unzip> s
+      ; d			:= <list-combinations; map(flatten-list); map(format-sequence)> defs
+      ; repsr		:= <flatten-list; filter(is-tuple)> reps
+      ; <debug> "returning-seq"
+      ; <list-combinations; map(flatten-list); debug> defs
+      ; <debug> d
+      ; <debug> repsr
+  format-sequence: [a | t] -> $[[a] [<format-sequence> t]]
+  format-sequence: [a | []] -> $[[a]]
 
   to-sdf: Identifier(i) -> ([$[[<format-identifier> i]]], [])
   to-sdf: Terminal(t) -> ([$["[t]"]], [])
