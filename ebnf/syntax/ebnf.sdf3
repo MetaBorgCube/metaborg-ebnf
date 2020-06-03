@@ -11,9 +11,16 @@ context-free start-symbols
 context-free syntax
   
   Start.Modules = <<{Module "\n"}+>>
-  Start.Grammar = <<{GrammarDef "\n"}+>>
+  Start.Grammar = <<StartSymbols?> <{GrammarDef "\n"}+>>
   
-  Module.Module = <Module <ModuleName> <{GrammarDef "\n"}+>>
+  Module.Module = <module <ModuleName>
+  									<StartSymbols?>
+  									<{GrammarDef "\n"}+>
+  								>
+  
+  StartSymbols.StartSymbols = <context-free start-symbols
+  															<ID+>
+  														>
   
   GrammarDef.Definition = <<Lhs> ::= <Rhs>>
 

@@ -26,6 +26,9 @@ lexical syntax
 
   ID = "By_Entry" {reject}
   ID = "By_Protected_Procedure" {reject}
+  Terminal = "module" {reject}
+  Terminal = "context-free" {reject}
+  Terminal = "start-symbols" {reject}
 
 lexical restrictions
 
