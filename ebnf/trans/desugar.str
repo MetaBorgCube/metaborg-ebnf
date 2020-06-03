@@ -12,8 +12,10 @@ strategies
   
 rules
 
-  desugar: Delimiter("\\|") -> Delimiter("|")
+  desugar: Delimiter("\\|") -> Terminal("|")
+  desugar: Delimiter(d) -> Terminal(d)
 
+  desugar: Repetition(Identifier(i)) -> Repetition(Seq([Identifier(i)]))
   desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat> [l1, l2])
   desugar: Sequence(a, Seq(l2)) -> Seq(<concat> [[a], l2])
   desugar: Sequence(Seq(l1), b) -> Seq(<concat> [l1, [b]])
@@ -28,7 +30,15 @@ rules
   desugar-adv: Seq(l) -> RepetitionOne(Delimiter(d), Seq(t))
   	where
   	  (fst, snd, _)		:= <split-fetch-keep(is-rep)> l
-  	; Repetition(Seq([Delimiter(d)| t])) := snd
+  	; Repetition(Seq([Terminal(d)| t])) := snd
+  	; n					:= <tmap(length); subt> (fst, t)
+  	; mtch				:= <split-at(|n); Snd> fst
+  	; <equal> (mtch, t)
+
+  desugar-adv: Seq(l) -> RepetitionOne(Seq(t))
+  	where
+  	  (fst, snd, _)		:= <split-fetch-keep(is-rep)> l
+  	; Repetition(Seq(t)):= snd
   	; n					:= <tmap(length); subt> (fst, t)
   	; mtch				:= <split-at(|n); Snd> fst
   	; <equal> (mtch, t)
@@ -38,3 +48,4 @@ rules
 signature constructors
 
   RepetitionOne : Term * Term -> Term
+  RepetitionOne : Term -> Term
