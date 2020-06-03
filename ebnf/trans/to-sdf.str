@@ -111,11 +111,17 @@ rules
       (defs, reps) 	:= <to-sdf> t
 
   to-sdf: Repetition(Identifier(i)) -> ([$[<[<format-identifier> i]*>]],[])
-  
   to-sdf: Repetition(r) ->  ([$[<[repIden]*>]], <concat> [reps, [(repIden, repBody)]])
     with (defs, reps) := <to-sdf> r
     ;	 repBody	 := defs
     ;	 repIden	 := <newname> "Repitition"
+  
+  to-sdf: RepetitionOne(Delimiter(d), Seq([Identifier(i)])) -> ([$[<{<[<format-identifier> i]> "[d]"}+>]], [])
+  to-sdf: RepetitionOne(Delimiter(d), r) -> ([$[<{[repIden] "[d]"}+>]], <concat> [reps, [(repIden, repBody)]])
+    with (res, reps) := <to-sdf> r
+    ;	 repBody	 := res
+    ;	 repIden	 := <newname> "Repitition"
+ 
 
   // Creates options of all possible combinations considered in the underlying grammars
   to-sdf: Seq(s) -> (d, repsr)
@@ -123,10 +129,6 @@ rules
       (defs, reps)	:= <map(to-sdf); unzip> s
       ; d			:= <list-combinations; map(flatten-list); map(format-sequence)> defs
       ; repsr		:= <flatten-list; filter(is-tuple)> reps
-      ; <debug> "returning-seq"
-      ; <list-combinations; map(flatten-list); debug> defs
-      ; <debug> d
-      ; <debug> repsr
   format-sequence: [a | t] -> $[[a] [<format-sequence> t]]
   format-sequence: [a | []] -> $[[a]]
 

@@ -7,7 +7,8 @@ imports
 
 strategies
 
-  desugar-all = bottomup(try(desugar))
+  desugar-basic = bottomup(try(desugar))
+  desugar-advanced = bottomup(try(desugar-adv))
   
 rules
 
@@ -21,3 +22,19 @@ rules
 signature constructors
 
   Seq : List(Term) -> Term
+  
+rules
+
+  desugar-adv: Seq(l) -> RepetitionOne(Delimiter(d), Seq(t))
+  	where
+  	  (fst, snd, _)		:= <split-fetch-keep(is-rep)> l
+  	; Repetition(Seq([Delimiter(d)| t])) := snd
+  	; n					:= <tmap(length); subt> (fst, t)
+  	; mtch				:= <split-at(|n); Snd> fst
+  	; <equal> (mtch, t)
+  	  
+  is-rep: Repetition(s) -> Repetition(s)
+  
+signature constructors
+
+  RepetitionOne : Term * Term -> Term

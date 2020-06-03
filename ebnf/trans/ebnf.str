@@ -22,11 +22,11 @@ rules // Debugging
   debug-desugar-ast: (_, _, ast, path, project-path) -> (filename, result)
     with 
       filename := <guarantee-extension(|"desugared.aterm")> path
-    ; result   := <desugar-all> ast
+    ; result   := <desugar-basic; desugar-advanced> ast
 
   debug-show-sdf3:
   	(_, _, ast, path, project-path) -> result
   	with
   	  filename := <guarantee-extension(|"sdf3")> path
-  	; desugared:= <desugar-all> ast
+  	; desugared:= <desugar-basic; desugar-advanced> ast
   	; result   := <to-sdf> (desugared, path)
