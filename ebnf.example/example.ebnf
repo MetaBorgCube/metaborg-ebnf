@@ -1,5 +1,9 @@
 module exampleone
 
+context-free start-symbols
+
+aspect_clause
+
 aspect_clause ::= attribute_definition_clause
 | enumeration_representation_clause
 | record_representation_clause
@@ -16,6 +20,10 @@ pragma_argument_association ::=
                             | pragma_argument__aspect_mark => expression_;
 
 module exampletwo
+
+context-free start-symbols
+
+simple_return_statement
 
 aspect_clause ::= attribute_definition_clause
 | enumeration_representation_clause

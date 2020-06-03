@@ -20,7 +20,8 @@ rules
 	    ; filename						:= <guarantee-extension(|"sdf3")> name
 	  	; syntax							:= <map(Fst)> syntaxAndRepStarts
       ; template 						:= $[module [name]
-  [<to-start-symbols> starts]
+[<to-start-symbols> starts]
+  
 context-free syntax
   
   [syntax]]
@@ -28,18 +29,17 @@ context-free syntax
 rules
   
   // Get the start symbols as defined in the EBNF
-  to-start-symbols: Some(StartSymbols(startsRaw)) -> starts
+  to-start-symbols: Some(StartSymbols(startsRaw)) -> template
   	with
   	  names := <map(to-start-symbol)> startsRaw
   	; sorted := <sort-list(LSort(gt))> names
   	; uniq := <uniq> sorted
   	; format := <map(format-identifier)> uniq
   	; starts := <map(to-spaced); concat> format
-  	; template := $[context-free start-symbols
-  	
-  	[starts]
-  	
-		]
+  	; template := $[
+context-free start-symbols
+
+  [starts]]
   to-start-symbols: None() -> ""
   
   to-spaced: i -> [i, " "]
