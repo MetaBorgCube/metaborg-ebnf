@@ -47,9 +47,7 @@ rules
 	
 		[<map(to-multlined)> importsTrimmed]
 	
-	context-free start-symbols
-	
-		[<to-start-symbols> starts]
+[<to-start-symbols> starts]
 	
 	context-free syntax
 	
@@ -107,18 +105,18 @@ rules
       ; (defs2, reps2) 	:= <to-sdf> t2
 
   // Adds an empty option for the grammar
-  to-sdf: Option(Identifier(i)) -> ([$[<[<format-identifier> i]?>]], [])
+  to-sdf: Option(Identifier(i)) -> ([$[[<format-identifier> i]?]], [])
   to-sdf: Option(t) -> ([$[]|defs] , reps)
     with
       (defs, reps) 	:= <to-sdf> t
 
-  to-sdf: Rep(Sep(d), [Identifier(i)],  q) -> ([$[<{<[<format-identifier> i]> "[d]"}[<to-quant> q]>]], [])
-  to-sdf: Rep(Sep(d), r, q) -> ([$[<{[repIden] "[d]"}[<to-quant> q]>]], <concat> [reps, [(repIden, repBody)]])
+  to-sdf: Rep(Sep(d), [Identifier(i)],  q) -> ([$[{[<format-identifier> i] "[d]"}[<to-quant> q]]], [])
+  to-sdf: Rep(Sep(d), r, q) -> ([$[{[repIden] "[d]"}[<to-quant> q]]], <concat> [reps, [(repIden, repBody)]])
     with (res, reps) := <to-sdf> Seq(r)
     ;	 repBody	 := res
     ;	 repIden	 := <newname> "Repitition"
-  to-sdf: Rep(None(), [Identifier(i)], q) -> ([$[<[<format-identifier> i][<to-quant> q]>]], [])
-  to-sdf: Rep(None(), r, q) -> ([$[<[repIden][<to-quant> q]>]], <concat> [reps, [(repIden, repBody)]])
+  to-sdf: Rep(None(), [Identifier(i)], q) -> ([$[[<format-identifier> i][<to-quant> q]]], [])
+  to-sdf: Rep(None(), r, q) -> ([$[[repIden][<to-quant> q]]], <concat> [reps, [(repIden, repBody)]])
     with (res, reps) := <to-sdf> Seq(r)
     ; repBody		 := res
     ; repIden		 := <newname> "Repitition"
