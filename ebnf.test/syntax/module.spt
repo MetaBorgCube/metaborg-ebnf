@@ -3,7 +3,7 @@ module test
 language ebnf
 
 test parse succeeds module [[
-	Module packages
+	module Packages
 
 	package_declaration ::= package_specification ;
 ]] parse succeeds
