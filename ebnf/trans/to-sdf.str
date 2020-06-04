@@ -85,7 +85,7 @@ rules
   ]]
     with
       iden 						:= <format-identifier> i
-    ; (prods, reps)  	:= <to-sdf> r
+    	; (prods, reps)		  	:= <to-sdf> r
 		; defResult  			:= <map(format-definition(|iden)); concat-strings> prods
 		; repsResult			:= <map(format-repitition-definition(|iden)); concat-strings> reps
 	
@@ -110,14 +110,8 @@ rules
     with
       (defs, reps) 	:= <to-sdf> t
 
-  to-sdf: Repetition(Identifier(i)) -> ([$[<[<format-identifier> i]*>]],[])
-  to-sdf: Repetition(r) ->  ([$[<[repIden]*>]], <concat> [reps, [(repIden, repBody)]])
-    with (defs, reps) := <to-sdf> r
-    ;	 repBody	 := defs
-    ;	 repIden	 := <newname> "Repitition"
-  
-  to-sdf: RepetitionOne(Delimiter(d), Seq([Identifier(i)])) -> ([$[<{<[<format-identifier> i]> "[d]"}+>]], [])
-  to-sdf: RepetitionOne(Delimiter(d), r) -> ([$[<{[repIden] "[d]"}+>]], <concat> [reps, [(repIden, repBody)]])
+  to-sdf: RepetitionOne(String(d), Seq([Identifier(i)])) -> ([$[<{<[<format-identifier> i]> "[d]"}+>]], [])
+  to-sdf: RepetitionOne(String(d), r) -> ([$[<{[repIden] "[d]"}+>]], <concat> [reps, [(repIden, repBody)]])
     with (res, reps) := <to-sdf> r
     ;	 repBody	 := res
     ;	 repIden	 := <newname> "Repitition"
@@ -137,9 +131,8 @@ rules
   format-sequence: [a | []] -> $[[a]]
 
   to-sdf: Identifier(i) -> ([$[[<format-identifier> i]]], [])
-  to-sdf: Terminal(t) -> ([$["[t]"]], [])
+  to-sdf: String(s) -> ([$["[s]"]], [])
   to-sdf: Keyword(k) -> ([$["[k]"]], [])
-  to-sdf: Delimiter(d) -> ([$["[d]"]], [])
   
   // Uppercases the first letter and removes the trailing _,
   // if the string has a double _, only the part after that is used

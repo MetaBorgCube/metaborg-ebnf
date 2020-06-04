@@ -12,18 +12,29 @@ strategies
   
 rules
 
-  desugar: Delimiter("\\|") -> Terminal("|")
-  desugar: Delimiter(d) -> Terminal(d)
+  desugar: Delimiter("\\|") -> String("|")
+  desugar: Delimiter(d) -> String(d)
+  desugar: Terminal(t) -> String(t)
 
   desugar: Repetition(Identifier(i)) -> Repetition(Seq([Identifier(i)]))
-  desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat> [l1, l2])
-  desugar: Sequence(a, Seq(l2)) -> Seq(<concat> [[a], l2])
-  desugar: Sequence(Seq(l1), b) -> Seq(<concat> [l1, [b]])
+  desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat; reduce-list(unify-strings)> [l1, l2])
+  desugar: Sequence(a, Seq(l2)) -> Seq(<concat; reduce-list(unify-strings)> [[a], l2])
+  desugar: Sequence(Seq(l1), b) -> Seq(<concat; reduce-list(unify-strings)> [l1, [b]])
   desugar: Sequence(a, b) -> Seq([a, b])
+  
+  reduce-list(r): [a|[]] -> [a|[]]
+  reduce-list(r): [a, b | t] -> <debug> tres
+    where res := <r> (a, b)
+    ; tres := <reduce-list(r)> [res|t]
+  reduce-list(r): [a, b | t] -> <debug> [a|tres]
+    where tres := <reduce-list(r)> [b|t]
+  
+  unify-strings: (String(a), String(b)) -> String($[[a] [b]])
   
 signature constructors
 
   Seq : List(Term) -> Term
+  String : String -> Term
   
 rules
 

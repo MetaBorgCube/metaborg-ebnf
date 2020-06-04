@@ -17,6 +17,8 @@ lexical syntax
   SingleDelimiter   = "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "!" | "#" | "\"" | "'" | "\\|"
   CompoundDelimiter = "=>" | ".." | ":=" | "/=" | ">=" | "<=" | "<<" | ">>" | "<>" | "--" | "**"
   
+  String		 = (Delimiter | Character | Digit)+
+  
   LAYOUT         = [\ \t\n\r] 
 
   LAYOUT         = "//" ~[\n\r]* NewLineEOF 
