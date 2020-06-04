@@ -1,4 +1,4 @@
-Module exceptions
+module Exceptions
 
 exception_declaration ::= defining_identifier_list : exception
                       [aspect_specification];

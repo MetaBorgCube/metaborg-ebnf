@@ -1,4 +1,4 @@
-Module tasks_and_synchronization
+module Tasks-Synchronization
 
 task_type_declaration ::=
                       task type defining_identifier [known_discriminant_part]

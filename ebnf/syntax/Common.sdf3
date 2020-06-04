@@ -2,14 +2,14 @@ module Common
 
 lexical syntax
  
-  Upper			 = [A-Z]
-  Lower			 = [a-z]
+  Upper			 	= [A-Z]
+  Lower			 	= [a-z]
 
-  Character		 = Lower | Upper
-  Digit			 = [0-9]
+  Character		= Lower | Upper
+  Digit			 	= [0-9]
   
-  ModuleName	 = Lower (Lower | "_")*
-  ID             = Lower+ "_" (Lower | "_")*
+  ModuleName	 = (Upper Lower*) ("-" Upper Lower*)*
+  ID           = Lower+ "_" (Lower | "_")*
   Terminal		 = (Character)+ | Digit
   Keyword 		 = "By_Entry" | "By_Protected_Procedure"
   
@@ -26,6 +26,9 @@ lexical syntax
 
   ID = "By_Entry" {reject}
   ID = "By_Protected_Procedure" {reject}
+  Terminal = "module" {reject}
+  Terminal = "context-free" {reject}
+  Terminal = "start-symbols" {reject}
 
 lexical restrictions
 

@@ -1,4 +1,4 @@
-Module generic_declarations
+module Generic-Declarations
 
 generic_declaration ::= generic_subprogram_declaration | generic_package_declaration
 

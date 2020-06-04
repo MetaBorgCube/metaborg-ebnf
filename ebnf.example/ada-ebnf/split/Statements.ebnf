@@ -1,4 +1,4 @@
-Module statements
+module Statements
 
 sequence_of_statements ::= statement_ {statement_} {label_}
 

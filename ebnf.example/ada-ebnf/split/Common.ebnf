@@ -1,4 +1,4 @@
-Module common
+module Common
 
 identifier_ ::= identifier_start {identifier_start | identifier_extend}
 

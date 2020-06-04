@@ -1,4 +1,4 @@
-Module subprograms
+module Subprograms
 
 subprogram_declaration ::=
                        [overriding_indicator]

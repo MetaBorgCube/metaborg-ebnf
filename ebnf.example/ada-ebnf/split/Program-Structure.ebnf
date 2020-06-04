@@ -1,4 +1,6 @@
-Module program_structure
+module Program-Structure
+
+context-free start-symbols compilation_
 
 compilation_ ::= {compilation_unit}
 
