@@ -93,10 +93,12 @@ rules
   ]
     with
       constr := <newname> i
-  format-repitition-definition(|i): (repIden, repBody) -> $[[repIden].[constr] = [repBody]
+
+  format-repitition-definition(|i): (repIden, [body|[]]) -> $[[repIden].[constr] = [body]
   ]
-    with
-      constr := <newname> <concat-strings> [i, repIden]
+    with  constr := <concat-strings; newname> [i, repIden]
+  format-repitition-definition(|i): (repIden, [body|t]) -> <concat-strings> r
+    with r := [<format-repitition-definition(|i)> (repIden, [body]),<format-repitition-definition(|i)> (repIden, t)]
       
   // Combines both options from the underlying grammar
   to-sdf: Choice(t1, t2) -> (<concat> [defs1, defs2] , <concat> [reps1, reps2])
@@ -110,16 +112,19 @@ rules
     with
       (defs, reps) 	:= <to-sdf> t
 
-  to-sdf: RepetitionOne(String(d), Seq([Identifier(i)])) -> ([$[<{<[<format-identifier> i]> "[d]"}+>]], [])
-  to-sdf: RepetitionOne(String(d), r) -> ([$[<{[repIden] "[d]"}+>]], <concat> [reps, [(repIden, repBody)]])
-    with (res, reps) := <to-sdf> r
+  to-sdf: Rep(Sep(d), [Identifier(i)],  q) -> ([$[<{<[<format-identifier> i]> "[d]"}[<to-quant> q]>]], [])
+  to-sdf: Rep(Sep(d), r, q) -> ([$[<{[repIden] "[d]"}[<to-quant> q]>]], <concat> [reps, [(repIden, repBody)]])
+    with (res, reps) := <to-sdf> Seq(r)
     ;	 repBody	 := res
     ;	 repIden	 := <newname> "Repitition"
-  to-sdf: RepetitionOne(Seq([Identifier(i)])) -> ([$[<[<format-identifier> i]+>]], [])
-  to-sdf: RepetitionOne(r) -> ([$[<[repIden]+>]], <concat> [reps, [(repIden, repBody)]])
-    with (res, reps) := <to-sdf> r
-    ;	 repBody	 := res
-    ;	 repIden	 := <newname> "Repitition"
+  to-sdf: Rep(None(), [Identifier(i)], q) -> ([$[<[<format-identifier> i][<to-quant> q]>]], [])
+  to-sdf: Rep(None(), r, q) -> ([$[<[repIden][<to-quant> q]>]], <concat> [reps, [(repIden, repBody)]])
+    with (res, reps) := <to-sdf> Seq(r)
+    ; repBody		 := res
+    ; repIden		 := <newname> "Repitition"
+    
+  to-quant: Star() -> $[*]
+  to-quant: One() -> $[+]
 
   // Creates options of all possible combinations considered in the underlying grammars
   to-sdf: Seq(s) -> (d, repsr)

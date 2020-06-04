@@ -16,17 +16,20 @@ rules
   desugar: Delimiter(d) -> String(d)
   desugar: Terminal(t) -> String(t)
 
-  desugar: Repetition(Identifier(i)) -> Repetition(Seq([Identifier(i)]))
-  desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat; reduce-list(unify-strings)> [l1, l2])
-  desugar: Sequence(a, Seq(l2)) -> Seq(<concat; reduce-list(unify-strings)> [[a], l2])
-  desugar: Sequence(Seq(l1), b) -> Seq(<concat; reduce-list(unify-strings)> [l1, [b]])
+  desugar: Repetition(Seq([String(s)|t])) -> Rep(Sep(s), t, Star())
+  desugar: Repetition(Seq(s)) -> Rep(None(), s, Star())
+  desugar: Repetition(i) -> Rep(None(), [i], Star())
+
+  desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat> [l1, l2])
+  desugar: Sequence(a, Seq(l2)) -> Seq(<concat> [[a], l2])
+  desugar: Sequence(Seq(l1), b) -> Seq(<concat> [l1, [b]])
   desugar: Sequence(a, b) -> Seq([a, b])
   
   reduce-list(r): [a|[]] -> [a|[]]
-  reduce-list(r): [a, b | t] -> <debug> tres
+  reduce-list(r): [a, b | t] -> tres
     where res := <r> (a, b)
     ; tres := <reduce-list(r)> [res|t]
-  reduce-list(r): [a, b | t] -> <debug> [a|tres]
+  reduce-list(r): [a, b | t] -> [a|tres]
     where tres := <reduce-list(r)> [b|t]
   
   unify-strings: (String(a), String(b)) -> String($[[a] [b]])
@@ -34,29 +37,31 @@ rules
 signature constructors
 
   Seq : List(Term) -> Term
+  Rep : RepSep * List(Term) * Quant -> Term
+  Sep : String -> RepSep
+  None : RepSep
+  One : Quant
+  Star : Quant
+  
+
   String : String -> Term
   
 rules
 
-  desugar-adv: Seq(l) -> RepetitionOne(Delimiter(d), Seq(t))
+  desugar-adv: Seq(l) -> res
   	where
-  	  (fst, snd, _)		:= <split-fetch-keep(is-rep)> l
-  	; Repetition(Seq([Terminal(d)| t])) := snd
+  	  (fst, snd, trd)	:= <split-fetch-keep(is-rep)> l
+  	; Rep(dlim, t, Star())	:= snd
   	; n					:= <tmap(length); subt> (fst, t)
-  	; mtch				:= <split-at(|n); Snd> fst
-  	; <equal> (mtch, t)
+  	; (st, mtch)		:= <split-at(|n)> fst
+	; <equal> (mtch, t)
+  	; nseq 				:= <concat> [st, [Rep(dlim, <reduce-list(unify-strings)> t, One())], trd]
+  	; res				:= Seq(<reduce-list(unify-strings)> nseq)
 
-  desugar-adv: Seq(l) -> RepetitionOne(Seq(t))
-  	where
-  	  (fst, snd, _)		:= <split-fetch-keep(is-rep)> l
-  	; Repetition(Seq(t)):= snd
-  	; n					:= <tmap(length); subt> (fst, t)
-  	; mtch				:= <split-at(|n); Snd> fst
-  	; <equal> (mtch, t)
+  desugar-adv: Seq(s) -> Seq(<reduce-list(unify-strings)> s)
   	  
-  is-rep: Repetition(s) -> Repetition(s)
+  is-rep: Rep(d, t, q) -> Rep(d, t, q)
   
 signature constructors
 
-  RepetitionOne : Term * Term -> Term
-  RepetitionOne : Term -> Term
+  RepOne : Term * List(Term) -> Term
