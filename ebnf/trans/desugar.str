@@ -12,11 +12,11 @@ strategies
   
 rules
 
-  desugar: Delimiter("\\|") -> String("|")
-  desugar: Delimiter(d) -> String(d)
-  desugar: Terminal(t) -> String(t)
+  desugar: Delimiter("\\|") -> Terminal("|")
+  desugar: Delimiter(d) -> Terminal(d)
+  desugar: Terminal(t) -> Terminal(t)
 
-  desugar: Repetition(Seq([String(s)|t])) -> Rep(Sep(s), t, Star())
+  desugar: Repetition(Seq([Terminal(s)|t])) -> Rep(Sep(s), t, Star())
   desugar: Repetition(Seq(s)) -> Rep(None(), s, Star())
   desugar: Repetition(i) -> Rep(None(), [i], Star())
 
@@ -32,19 +32,16 @@ rules
   reduce-list(r): [a, b | t] -> [a|tres]
     where tres := <reduce-list(r)> [b|t]
   
-  unify-strings: (String(a), String(b)) -> String($[[a] [b]])
+  unify-strings: (Terminal(a), Terminal(b)) -> Terminal($[[a] [b]])
   
 signature constructors
 
   Seq : List(Term) -> Term
   Rep : RepSep * List(Term) * Quant -> Term
-  Sep : String -> RepSep
+  Sep : Letters -> RepSep
   None : RepSep
   One : Quant
   Star : Quant
-  
-
-  String : String -> Term
   
 rules
 

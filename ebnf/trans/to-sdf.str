@@ -134,7 +134,7 @@ rules
   format-sequence: [a | []] -> $[[a]]
 
   to-sdf: Identifier(i) -> ([$[[<format-identifier> i]]], [])
-  to-sdf: String(s) -> ([$["[s]"]], [])
+  to-sdf: Terminal(s) -> ([$["[s]"]], [])
   to-sdf: Keyword(k) -> ([$["[k]"]], [])
   
   // Uppercases the first letter and removes the trailing _,
