@@ -7,8 +7,58 @@ imports
 
 strategies
 
-  desugar-all = topdown(try(desugar))
+  desugar-basic = bottomup(try(desugar))
+  desugar-advanced = bottomup(try(desugar-adv))
   
 rules
 
-  desugar: Delimiter("\\|") -> Delimiter("|")
+  desugar: Delimiter("\\|") -> Terminal("|")
+  desugar: Delimiter(d) -> Terminal(d)
+  desugar: Terminal(t) -> Terminal(t)
+
+  desugar: Repetition(Seq([Terminal(s)|t])) -> Rep(Sep(s), t, Star())
+  desugar: Repetition(Seq(s)) -> Rep(None(), s, Star())
+  desugar: Repetition(i) -> Rep(None(), [i], Star())
+
+  desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat> [l1, l2])
+  desugar: Sequence(a, Seq(l2)) -> Seq(<concat> [[a], l2])
+  desugar: Sequence(Seq(l1), b) -> Seq(<concat> [l1, [b]])
+  desugar: Sequence(a, b) -> Seq([a, b])
+  
+  reduce-list(r): [a|[]] -> [a|[]]
+  reduce-list(r): [a, b | t] -> tres
+    where res := <r> (a, b)
+    ; tres := <reduce-list(r)> [res|t]
+  reduce-list(r): [a, b | t] -> [a|tres]
+    where tres := <reduce-list(r)> [b|t]
+  
+  unify-strings: (Terminal(a), Terminal(b)) -> Terminal($[[a] [b]])
+  
+signature constructors
+
+  Seq : List(Term) -> Term
+  Rep : RepSep * List(Term) * Quant -> Term
+  Sep : Letters -> RepSep
+  None : RepSep
+  One : Quant
+  Star : Quant
+  
+rules
+
+  desugar-adv: Seq(l) -> res
+  	where
+  	  (fst, snd, trd)	:= <split-fetch-keep(is-rep)> l
+  	; Rep(dlim, t, Star())	:= snd
+  	; n					:= <tmap(length); subt> (fst, t)
+  	; (st, mtch)		:= <split-at(|n)> fst
+	; <equal> (mtch, t)
+  	; nseq 				:= <concat> [st, [Rep(dlim, <reduce-list(unify-strings)> t, One())], trd]
+  	; res				:= Seq(<reduce-list(unify-strings)> nseq)
+
+  desugar-adv: Seq(s) -> Seq(<reduce-list(unify-strings)> s)
+  	  
+  is-rep: Rep(d, t, q) -> Rep(d, t, q)
+  
+signature constructors
+
+  RepOne : Term * List(Term) -> Term
