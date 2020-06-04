@@ -2,28 +2,61 @@ module to-sdf
 
 imports
   signatures/ebnf-sig
+  libspoofax/stratego/debug
 
 rules
-  to-sdf: (Modules(mods), path) -> modules
+  to-sdf: (Modules(mods), path) ->  (<concat> [filepaths, [mainfilename]], <concat> [files, [mainfile]])
     with
-      modules			:= <map(to-sdf)> mods
+      modules					:= <map(to-sdf)> mods
+      ; filenames			:= <unzip; Fst> modules
+      ; filepaths			:= <map(format-filename(|path))> filenames
+      ; imports				:= <map(split-at-dot; Fst)> filenames
+      ; files					:= <map(format-module(|imports))> modules
+      ; (mainfilename, mainfile)	:= <format-mainfile> (path, imports)
       
-  to-sdf: (Grammar(starts, defs), path) -> mod
+  to-sdf: (Grammar(starts, defs), path) -> (filepath, file)
     with
-      	file			:= <split-at-dot; Fst> path
-      ; filename 	:= <guarantee-extension(|"sdf3")> path
-      ; mod				:= <to-sdf> Module(file, starts, defs)
+      	modulename		:= <split-after; Snd; split-at-dot; Fst> (path, "/")
+      ; filename 			:= <guarantee-extension(|"sdf3")> modulename
+      ; filepath			:= <format-filename(|path)> filename
+      ; mod						:= <to-sdf> Module(modulename, starts, defs)
+      ; file					:= <format-module(|[])> mod
       
-  to-sdf: Module(name, starts, defs) -> (filename, template)
+  to-sdf: Module(name, starts, defs) -> (filename, (starts, syntax))
     with
 	    syntax			:= <map(to-sdf)> defs
 	    ; filename	:= <guarantee-extension(|"sdf3")> name
-      ; template 	:= $[module [name]
-[<to-start-symbols> starts]
-  
-context-free syntax
-  
-  [syntax]]
+	
+	format-filename(|path): filename -> <concat-strings> [<split-before; Fst> (path, "/"), "/src-gen/", filename]
+			    
+	format-mainfile: (path, imports) -> (mainfilepath, mainfile)
+		with
+			mainmodule			:= <split-after; Snd; split-at-dot; Fst> (path, "/")
+			;	mainfilename	:= <guarantee-extension(|"sdf3")> mainmodule
+			; mainfilepath	:= <format-filename(|path)> mainfilename
+			; mainfile			:=	<format-module(|imports)> (mainmodule, (None(), []))
+			
+	format-module(|imports): (filename, (starts, syntax)) -> template
+		with 
+		modulename				:= <split-at-dot; Fst> filename
+		; importsTrimmed	:= <remove-all(equal(|modulename))> imports
+		; template 				:= $[module [modulename]
+	
+	imports
+	
+		[<map(to-multlined)> importsTrimmed]
+	
+	context-free start-symbols
+	
+		[<to-start-symbols> starts]
+	
+	context-free syntax
+	
+		[syntax]
+]
+
+  to-multlined: i -> $[[i]
+  ]
   
 rules
   

@@ -1,0 +1,9 @@
+module Lexical-Elements
+
+pragma_ ::= pragma identifier_ [(pragma_argument_association {, pragma_argument_association})];
+
+pragma_argument_association ::=
+                            [pragma_argument__identifier =>] name_
+                            | [pragma_argument__identifier =>] expression_
+                            | pragma_argument__aspect_mark => name_
+                            | pragma_argument__aspect_mark => expression_

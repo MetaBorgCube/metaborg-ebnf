@@ -1,4 +1,4 @@
-Module representation
+module Representation
 
 aspect_clause ::= attribute_definition_clause
               | enumeration_representation_clause

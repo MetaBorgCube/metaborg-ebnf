@@ -1,4 +1,21 @@
-Module declarations
+module Declarations
+
+basic_declaration ::=
+                  type_declaration
+                  | object_declaration
+                  | subprogram_declaration
+                  | null_procedure_declaration
+                  | package_declaration
+                  | exception_declaration
+                  | generic_instantiation
+                  | subtype_declaration
+                  | number_declaration
+                  | abstract_subprogram_declaration
+                  | expression_function_declaration
+                  | renaming_declaration
+                  | generic_declaration
+
+defining_identifier ::= identifier_
 
 type_declaration ::= full_type_declaration
                  | incomplete_type_declaration

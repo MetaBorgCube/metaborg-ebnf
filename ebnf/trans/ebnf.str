@@ -25,6 +25,6 @@ rules // Debugging
     ; result   := <desugar-all> ast
 
   debug-show-sdf3:
-  	(node, _, _, path, project-path) -> <unzip> result
+  	(node, _, _, path, project-path) -> result
   	with
   	 result   := <to-sdf> (node, path)

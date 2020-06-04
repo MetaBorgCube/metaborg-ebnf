@@ -1,4 +1,4 @@
-module exampleone
+module Exampleone
 
 context-free start-symbols
 
@@ -19,7 +19,7 @@ pragma_argument_association ::=
                             | pragma_argument__aspect_mark => name_
                             | pragma_argument__aspect_mark => expression_;
 
-module exampletwo
+module Exampletwo
 
 context-free start-symbols
 

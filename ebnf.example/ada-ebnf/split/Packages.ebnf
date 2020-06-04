@@ -1,4 +1,4 @@
-Module packages
+module Packages
 
 package_declaration ::= package_specification ;
 

@@ -1,4 +1,4 @@
-Module names_and_expressions
+module Names-Expressions
 
 name_ ::= direct_name
      | indexed_component
