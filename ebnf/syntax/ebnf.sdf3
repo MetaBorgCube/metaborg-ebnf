@@ -14,13 +14,13 @@ context-free syntax
   Start.Grammar = <<StartSymbols?> <{GrammarDef "\n"}+>>
   
   Module.Module = <module <ModuleName>
-  									<StartSymbols?>
-  									<{GrammarDef "\n"}+>
-  								>
+  						<StartSymbols?>
+  						<{GrammarDef "\n"}+>
+  >
   
   StartSymbols.StartSymbols = <context-free start-symbols
-  															<ID+>
-  														>
+  								<ID+>
+  >
   
   GrammarDef.Definition = <<Lhs> ::= <Rhs>>
 
