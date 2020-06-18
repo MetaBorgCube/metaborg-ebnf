@@ -85,9 +85,15 @@ rules
 //  ]
 //    with
 //      constr := <newname> i
-  format-definition(|i): r -> SdfProductionWithCons(SortCons(SortDef(i), Constructor(constr)), Rhs(r), NoAttrs())
+  format-definition(|i): r -> SdfProductionWithCons(SortCons(SortDef(i), Constructor(constr)), Rhs(rhs), NoAttrs())
     with
-      constr := <newname> i
+      rhs		:= <ensure-list> r
+    ; constr 	:= <newname> i
+      
+  // Ensure that it's a list, Rhs(...) should contain a list
+  ensure-list: r -> r 
+    where <is-list> r
+  ensure-list: r -> [r|[]]
 
 //  format-repitition-definition(|i): (repIden, [body|[]]) -> $[[repIden].[constr] = [body]
 //  ]
@@ -113,19 +119,20 @@ rules
       (defs, reps) 	:= <to-sdf-ast> t
 
 //  to-sdf: Rep(Sep(d), [Identifier(i)],  q) -> ([$[{[<format-identifier> i] "[d]"}[<to-quant> q]]], [])
-  to-sdf-ast: Rep(Sep(d), [Identifier(i)], One()) -> (IterSep(Sort(i), Lit(d)), [])
-  to-sdf-ast: Rep(Sep(d), [Identifier(i)], Star()) -> (IterStarSep(Sort(i), Lit(d)), [])
+  to-sdf-ast: Rep(Sep(d), [Identifier(i)], One()) -> ([IterSep(Sort(i), Lit(<double-quote> d))], [])
+  to-sdf-ast: Rep(Sep(d), [Identifier(i)], Star()) -> ([IterStarSep(Sort(i), Lit(<double-quote> d))], [])
 //  to-sdf: Rep(None(), [Identifier(i)], q) -> ([$[[<format-identifier> i][<to-quant> q]]], [])
-  to-sdf-ast: Rep(None(), [Identifier(i)], One()) -> (Iter(Sort(i)), [])
-  to-sdf-ast: Rep(None(), [Identifier(i)], Star()) -> (IterStar(Sort(i)), [])
+  to-sdf-ast: Rep(None(), [Identifier(i)], One()) -> ([Iter(Sort(i))], [])
+  to-sdf-ast: Rep(None(), [Identifier(i)], Star()) -> ([IterStar(Sort(i))], [])
 //  to-sdf: Rep(None(), r, q) -> ([$[[repIden][<to-quant> q]]], <concat> [reps, [(repIden, repBody)]])
 //    with (res, reps) := <to-sdf> Seq(r)
 //    ; repBody		 := res
 //    ; repIden		 := <newname> "Repitition"
-  to-sdf-ast: Rep(s, r, q) -> (<to-sdf-ast> Rep(s, [Identifier(repIden)], q), <concat> [reps, [(repIden, repBody)]])
-    with (res, reps) := <to-sdf-ast> Seq(r)
-    ;	 repBody	 := res
-    ;	 repIden	 := <newname> "Repitition"
+  to-sdf-ast: Rep(s, r, q) -> (defs, <concat> [[(repIden, repDef)], repReps, reps])
+    with 
+      (repDef, repReps)	:= <to-sdf-ast> Seq(r)
+    ; repIden			:= <newname> "Repitition"
+	; (defs, reps)		:= <to-sdf-ast> Rep(s, [Identifier(repIden)], q)
     
 //  to-quant: Star() -> $[*]
 //  to-quant: One() -> $[+]
