@@ -25,13 +25,6 @@ rules
   desugar: Sequence(Seq(l1), b) -> Seq(<concat> [l1, [b]])
   desugar: Sequence(a, b) -> Seq([a, b])
   
-  reduce-list(r): [a|[]] -> [a|[]]
-  reduce-list(r): [a, b | t] -> tres
-    where res := <r> (a, b)
-    ; tres := <reduce-list(r)> [res|t]
-  reduce-list(r): [a, b | t] -> [a|tres]
-    where tres := <reduce-list(r)> [b|t]
-  
   unify-strings: (Terminal(a), Terminal(b)) -> Terminal($[[a] [b]])
   
 signature constructors
@@ -56,6 +49,13 @@ rules
   	; res				:= Seq(<reduce-list(unify-strings)> nseq)
 
   desugar-adv: Seq(s) -> Seq(<reduce-list(unify-strings)> s)
+
+  reduce-list(r): [a|[]] -> [a|[]]
+  reduce-list(r): [a, b | t] -> tres
+    where res := <r> (a, b)
+    ; tres := <reduce-list(r)> [res|t]
+  reduce-list(r): [a, b | t] -> [a|tres]
+    where tres := <reduce-list(r)> [b|t]
   	  
   is-rep: Rep(d, t, q) -> Rep(d, t, q)
   

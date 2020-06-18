@@ -1,0 +1,21 @@
+module inline
+
+imports
+
+  signatures/TemplateLang-sig
+
+strategies
+
+  simplify = bottomup(try(rename))
+  
+rules
+
+  rename: SdfProductionWithCons(
+            SortCons(s, c)
+          , Rhs([Sort(i)])
+          , NoAttrs()
+          ) -> SdfProductionWithCons(
+            SortCons(s, Constructor(i))
+          , Rhs([Sort(i)])
+          , NoAttrs()
+          )
