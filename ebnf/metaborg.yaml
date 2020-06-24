@@ -9,6 +9,7 @@ dependencies:
   - org.metaborg:dynsem:${metaborgVersion}
   source:
   - org.metaborg:meta.lib.spoofax:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.lang.template:${metaborgVersion}
   - org.metaborg:statix.runtime:${metaborgVersion}
 pardonedLanguages:
 - EditorService

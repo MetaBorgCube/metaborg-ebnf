@@ -7,7 +7,7 @@ imports
   outline
   analysis
   desugar
-  to-sdf
+  to-sdf-ast
   signatures/ebnf-sig
   libspoofax/stratego/debug
 
@@ -27,6 +27,5 @@ rules // Debugging
   debug-show-sdf3:
   	(_, _, ast, path, project-path) -> result
   	with
-  	  filename := <guarantee-extension(|"sdf3")> path
-  	; desugared:= <desugar-basic; desugar-advanced> ast
-  	; result   := <to-sdf> (desugared, path)
+  	  desugared := <desugar-basic; desugar-advanced> ast
+  	; result    := <to-sdf-ast> (desugared, path)

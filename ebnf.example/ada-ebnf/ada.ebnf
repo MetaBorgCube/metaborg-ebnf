@@ -481,7 +481,7 @@ expression_ ::=
            | relation_ {or relation_}
            | relation_ {xor relation_}
            | relation_ {and then relation_}
-           | relation_ {or else relation}
+           | relation_ {or else relation_}
 
 choice_expression ::=
                   choice_relation {and choice_relation}
