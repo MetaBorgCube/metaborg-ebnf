@@ -7,27 +7,34 @@ imports
 strategies
 
   simplify = bottomup(try(rename))
-  inline-sorts = oncetd(inline)
+//  inline-sorts = oncetd(inline)
   
 rules
 
-  inline: l -> f
+  inline-sorts: l -> s
     where
       // Get a list of definitions only used once
       i := <get-single-used-sorts> l
+    ; j := <get-single-definitions> l
+    ; a := <list-intersect; debug> (i, j)
       // Get definitions which are in the list
-    ; d := <get-definitions; hashtable-getlist> (i, l)
+    ; d := <get-definitions; hashtable-getlist> (a, l)
       // Substitute in the place they're used
     ; s := <substitute-definitions> (d, l)
-      // Only remove definitions which were found for substitution
-    ; f := <remove-definitions> (<hashtable-keys> d, s)
     
 rules
   
   get-single-used-sorts: l -> i
     with
     s := <map(filter-sort); concat; map(get-sort-name); string-sort> l
-    ; i := <count-list; debug; hashtable-getlist; debug; filter(count-filter); debug; map(Fst); debug> (<new-hashtable>, s)
+    ; i := <count-list; hashtable-getlist; filter(count-filter); map(Fst)> (<new-hashtable>, s)
+    
+  get-single-definitions: l -> i
+    with
+    s := <map(get-declaration); string-sort>
+    ; i := <count-list; hashtable-getlist; filter(count-filter); map(Fst)> (<new-hashtable>, s)
+    
+  get-declaration: SdfProductionWithCons(SortCons(SortDef(s), _), _, _) -> s
     
   // Get list of sorts from the rules
   filter-sort: SdfProductionWithCons(_, Rhs(r), _) -> <map(get-sort); flatten-list> r
@@ -61,6 +68,12 @@ rules
       
   count-filter: (s, 1) -> (s, 1)
   
+  list-intersect: ([], l) -> []
+  list-intersect: ([a|t], l) -> [a|<list-intersect> (t, l)]
+    where <elem> (a, l)
+  list-intersect: ([a|t], l) -> <list-intersect> (t, l)
+ 
+  
 rules
 
   get-definitions: (d, l) -> <get-defs> (<new-hashtable>, d, l)
@@ -70,6 +83,7 @@ rules
     where
       rhs := <filter(is-definition(|d)); index(|1); get-definition> l
     ; h1 := <hashtable-put(|d, rhs)> h
+  get-defs: (h, [_|t], l) -> <get-defs> (h, t, l) // Skip definition when it is not found
       
   // Check whether this is the definition we're looking for
   is-definition(|a): SdfProductionWithCons(SortCons(SortDef(a), c), r, atr) -> SdfProductionWithCons(SortCons(SortDef(a), c), r, atr)
@@ -83,9 +97,15 @@ rules
 rules
 
   substitute-definitions: ([], l) -> l
-  substitute-definitions: ([(n, rhs)|t], l) -> <substitute-definitions> (t, l1)
+  substitute-definitions: ([(n, rhs)|t], l) -> <substitute-definitions> (t, l2)
     where
-      l1 := <substitute-definition(|n, rhs)> l
+	  <debug> n
+	; <debug> l
+    ; l1 := <substitute-definition(|n, rhs)> l
+      // Remove definition which was found for substitution
+    ; l2 := <remove-all(is-definition(|n))> l1
+  // Skip substituting this definition, it's not a Rhs([Sort(n)])
+  substitute-definitions: ([(n, rhs)|t], l) -> <substitute-definitions> (t, l)
 
   // Substitute the right hand sides with the definition given in the strategy
   substitute-definition(|n, r): [SdfProductionWithCons(SortCons(SortDef(s), c), Rhs([Sort(n)]), atr)|t] -> res
@@ -93,14 +113,6 @@ rules
       res := [SdfProductionWithCons(SortCons(SortDef(s), Constructor(n)), r, atr)|t]
   substitute-definition(|n, r): [h|t] -> [h|<substitute-definition(|n, r)> t]
 
-rules
-
-  // Removes all definitions in the first list from the sdf definitions in the second list
-  remove-definitions: ([], l) -> l
-  remove-definitions: ([d|t], l) -> <remove-definitions> (t, l1)
-    where
-      l1 := <remove-all(is-definition(|d))> l
-      
 rules
 
   rename: SdfProductionWithCons(
