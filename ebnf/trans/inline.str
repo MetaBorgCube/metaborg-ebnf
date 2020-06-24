@@ -7,7 +7,6 @@ imports
 strategies
 
   simplify = bottomup(try(rename))
-//  inline-sorts = oncetd(inline)
   
 rules
 
@@ -45,6 +44,7 @@ rules
   get-sort: IterSep(Sort(i), _) -> Sort(i)
   get-sort: IterStarSep(Sort(i), _) -> Sort(i)
   get-sort: Lit(_) -> []
+  get-sort: Opt(Sort(i)) -> Sort(i)
   get-sort: Opt(_) -> []
 
   get-sort-name: Sort(i) -> i

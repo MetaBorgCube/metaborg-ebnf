@@ -30,7 +30,7 @@ rules
     with
     	startsymbols	:= <to-start-symbols> starts
 	    ; syntax		:= <map(to-sdf-ast); flatten-list> defs
-      	; simpleSyntax	:= <simplify; inline-sorts> syntax
+		; simpleSyntax	:= <simplify; inline-sorts> syntax
 	    ; filename		:= <guarantee-extension(|"sdf3")> name
 	
 	format-filename(|path): filename -> <concat-strings> [<split-before; Fst> (path, "/"), "/src-gen/", filename]
