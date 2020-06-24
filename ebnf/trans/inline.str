@@ -10,6 +10,111 @@ strategies
   
 rules
 
+  inline-sorts: l -> s
+    where
+      // Get a list of definitions only used once
+      i := <get-single-used-sorts> l
+    ; j := <get-single-definitions> l
+    ; a := <list-intersect; debug> (i, j)
+      // Get definitions which are in the list
+    ; d := <get-definitions; hashtable-getlist> (a, l)
+      // Substitute in the place they're used
+    ; s := <substitute-definitions> (d, l)
+    
+rules
+  
+  get-single-used-sorts: l -> i
+    with
+    s := <map(filter-sort); concat; map(get-sort-name); string-sort> l
+    ; i := <count-list; hashtable-getlist; filter(count-filter); map(Fst)> (<new-hashtable>, s)
+    
+  get-single-definitions: l -> i
+    with
+    s := <map(get-declaration); string-sort>
+    ; i := <count-list; hashtable-getlist; filter(count-filter); map(Fst)> (<new-hashtable>, s)
+    
+  get-declaration: SdfProductionWithCons(SortCons(SortDef(s), _), _, _) -> s
+    
+  // Get list of sorts from the rules
+  filter-sort: SdfProductionWithCons(_, Rhs(r), _) -> <map(get-sort); flatten-list> r
+
+  get-sort: Sort(i) -> Sort(i)
+  get-sort: Iter(Sort(i)) -> Sort(i)
+  get-sort: IterStar(Sort(i)) -> Sort(i)
+  get-sort: IterSep(Sort(i), _) -> Sort(i)
+  get-sort: IterStarSep(Sort(i), _) -> Sort(i)
+  get-sort: Lit(_) -> []
+  get-sort: Opt(Sort(i)) -> Sort(i)
+  get-sort: Opt(_) -> []
+
+  get-sort-name: Sort(i) -> i
+    
+  // Apply the count method to every element in the list
+  count-list: (tbl, []) -> tbl
+  count-list: (tbl, [a|t]) -> tbl2
+    with
+      tbl1 := <count> (tbl, a)
+    ; tbl2 := <count-list> (tbl1, t)
+
+  // Try to increment the value in the table, if not create the counter
+  count: (tbl, i) -> tbl2
+    where
+      k := <hashtable-get(|i)> tbl
+    ; n := <add> (k, 1)
+    ; tbl2 := <hashtable-put(|i, n)> tbl
+  count: (tbl, i) -> tbl2
+    where
+      tbl2 := <hashtable-put(|i, 1)> tbl
+      
+  count-filter: (s, 1) -> (s, 1)
+  
+  list-intersect: ([], l) -> []
+  list-intersect: ([a|t], l) -> [a|<list-intersect> (t, l)]
+    where <elem> (a, l)
+  list-intersect: ([a|t], l) -> <list-intersect> (t, l)
+ 
+  
+rules
+
+  get-definitions: (d, l) -> <get-defs> (<new-hashtable>, d, l)
+      
+  get-defs: (h, [], l) -> h
+  get-defs: (h, [d|t], l) -> <get-defs> (h1, t, l)
+    where
+      rhs := <filter(is-definition(|d)); index(|1); get-definition> l
+    ; h1 := <hashtable-put(|d, rhs)> h
+  get-defs: (h, [_|t], l) -> <get-defs> (h, t, l) // Skip definition when it is not found
+      
+  // Check whether this is the definition we're looking for
+  is-definition(|a): SdfProductionWithCons(SortCons(SortDef(a), c), r, atr) -> SdfProductionWithCons(SortCons(SortDef(a), c), r, atr)
+  // Get the definition of the rule
+  get-definition: SdfProductionWithCons(_, r, _) -> r
+  
+  contains(|a): [] -> 0
+  contains(|a): [a|t] -> 1
+  contains(|a): [b|t] -> <contains(|a)> t
+  
+rules
+
+  substitute-definitions: ([], l) -> l
+  substitute-definitions: ([(n, rhs)|t], l) -> <substitute-definitions> (t, l2)
+    where
+	  <debug> n
+	; <debug> l
+    ; l1 := <substitute-definition(|n, rhs)> l
+      // Remove definition which was found for substitution
+    ; l2 := <remove-all(is-definition(|n))> l1
+  // Skip substituting this definition, it's not a Rhs([Sort(n)])
+  substitute-definitions: ([(n, rhs)|t], l) -> <substitute-definitions> (t, l)
+
+  // Substitute the right hand sides with the definition given in the strategy
+  substitute-definition(|n, r): [SdfProductionWithCons(SortCons(SortDef(s), c), Rhs([Sort(n)]), atr)|t] -> res
+    where
+      res := [SdfProductionWithCons(SortCons(SortDef(s), Constructor(n)), r, atr)|t]
+  substitute-definition(|n, r): [h|t] -> [h|<substitute-definition(|n, r)> t]
+
+rules
+
   rename: SdfProductionWithCons(
             SortCons(s, c)
           , Rhs([Sort(i)])
