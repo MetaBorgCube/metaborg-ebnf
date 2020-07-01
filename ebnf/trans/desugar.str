@@ -12,20 +12,22 @@ strategies
   
 rules
 
+  // Map all strings to the same AST node
   desugar: Delimiter("\\|") -> Terminal("|")
   desugar: Delimiter(d) -> Terminal(d)
   desugar: Terminal(t) -> Terminal(t)
 
+  // Sugar repetitions
   desugar: Repetition(Seq([Terminal(s)|t])) -> Rep(Sep(s), t, Star())
   desugar: Repetition(Seq(s)) -> Rep(None(), s, Star())
   desugar: Repetition(i) -> Rep(None(), [i], Star())
 
+  // Sequences are trees, which will be mapped to a simple list
+  // Sequence(Sequence(...), Sequence(...)) -> Seq([..., ...])
   desugar: Sequence(Seq(l1), Seq(l2)) -> Seq(<concat> [l1, l2])
   desugar: Sequence(a, Seq(l2)) -> Seq(<concat> [[a], l2])
   desugar: Sequence(Seq(l1), b) -> Seq(<concat> [l1, [b]])
   desugar: Sequence(a, b) -> Seq([a, b])
-  
-  unify-strings: (Terminal(a), Terminal(b)) -> Terminal($[[a] [b]])
   
 signature constructors
 
@@ -38,25 +40,34 @@ signature constructors
   
 rules
 
+  // Try to make a + repetition from a * repetition where the part before the repetition 
+  // is the same as the repeating part
   desugar-adv: Seq(l) -> res
   	where
-  	  (fst, snd, trd)        := <split-fetch-keep(is-rep)> l
-  	; Rep(dlim, t, Star())   := snd
-  	; n                      := <tmap(length); subt> (fst, t)
-  	; (st, mtch)             := <split-at(|n)> fst
-	; <equal> (mtch, t)
-  	; nseq                   := <concat> [st, [Rep(dlim, <reduce-list(unify-strings)> t, One())], trd]
-  	; res                    := Seq(<reduce-list(unify-strings)> nseq)
+      (fst, snd, trd)        := <split-fetch-keep(is-rep)> l
+    ; Rep(dlim, t, Star())   := snd
+    ; n                      := <tmap(length); subt> (fst, t)
+    ; (st, mtch)             := <split-at(|n)> fst
+    ; <equal> (mtch, t)
+    ; nseq                   := <concat> [st, [Rep(dlim, <reduce-list(unify-strings)> t, One())], trd]
+    ; res                    := Seq(<reduce-list(unify-strings)> nseq)
 
+  // Fold strings, ["this", "string"] -> ["this string"]
   desugar-adv: Seq(s) -> Seq(<reduce-list(unify-strings)> s)
+  
+  // Concatenate strings
+  unify-strings: (Terminal(a), Terminal(b)) -> Terminal($[[a] [b]])
 
+  // Try to apply a map action on each sequential pair in a list [a, b, c], (a, b) -> d, [d, c]
+  // If two values are reduced, the value is processed again and can be reduced further
   reduce-list(r): [a|[]] -> [a|[]]
   reduce-list(r): [a, b | t] -> tres
     where res   := <r> (a, b)
     ; tres      := <reduce-list(r)> [res|t]
   reduce-list(r): [a, b | t] -> [a|tres]
     where tres  := <reduce-list(r)> [b|t]
-  	  
+    
+  // Check whether node is a repetition
   is-rep: Rep(d, t, q) -> Rep(d, t, q)
   
 signature constructors
