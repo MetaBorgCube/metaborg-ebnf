@@ -40,22 +40,22 @@ rules
 
   desugar-adv: Seq(l) -> res
   	where
-  	  (fst, snd, trd)	:= <split-fetch-keep(is-rep)> l
-  	; Rep(dlim, t, Star())	:= snd
-  	; n					:= <tmap(length); subt> (fst, t)
-  	; (st, mtch)		:= <split-at(|n)> fst
+  	  (fst, snd, trd)        := <split-fetch-keep(is-rep)> l
+  	; Rep(dlim, t, Star())   := snd
+  	; n                      := <tmap(length); subt> (fst, t)
+  	; (st, mtch)             := <split-at(|n)> fst
 	; <equal> (mtch, t)
-  	; nseq 				:= <concat> [st, [Rep(dlim, <reduce-list(unify-strings)> t, One())], trd]
-  	; res				:= Seq(<reduce-list(unify-strings)> nseq)
+  	; nseq                   := <concat> [st, [Rep(dlim, <reduce-list(unify-strings)> t, One())], trd]
+  	; res                    := Seq(<reduce-list(unify-strings)> nseq)
 
   desugar-adv: Seq(s) -> Seq(<reduce-list(unify-strings)> s)
 
   reduce-list(r): [a|[]] -> [a|[]]
   reduce-list(r): [a, b | t] -> tres
-    where res := <r> (a, b)
-    ; tres := <reduce-list(r)> [res|t]
+    where res   := <r> (a, b)
+    ; tres      := <reduce-list(r)> [res|t]
   reduce-list(r): [a, b | t] -> [a|tres]
-    where tres := <reduce-list(r)> [b|t]
+    where tres  := <reduce-list(r)> [b|t]
   	  
   is-rep: Rep(d, t, q) -> Rep(d, t, q)
   
