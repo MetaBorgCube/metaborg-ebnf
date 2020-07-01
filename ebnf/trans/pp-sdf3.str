@@ -29,7 +29,7 @@ rules
   pp-debug :
     ast -> result
     with
-       result := <pp-SDF3-string> ast
+      result := <pp-SDF3-string> ast
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-SDF3-string); debug(!"cannot pp ")))> ast
     ;  result := ""
 
