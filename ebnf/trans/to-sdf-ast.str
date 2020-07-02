@@ -9,6 +9,7 @@ imports
   pp-sdf3
   
 rules
+  // Processes the entire collection of modules
   to-sdf-ast: (Modules(mods), path) ->  (<concat> [filepaths, [mainfilename]], <concat> [files, [mainfile]])
     with
       modules                   := <map(to-sdf-ast)> mods
@@ -18,6 +19,7 @@ rules
     ; files                     := <map(format-module(|imports))> modules
     ; (mainfilename, mainfile)  := <format-mainfile> (path, imports)
       
+  // Pretty prints the entire module
   to-sdf-ast: (Grammar(starts, defs), path) -> (filepath, file)
     with
       modulename  := <split-after; Snd; split-at-dot; Fst> (path, "/")
@@ -26,6 +28,7 @@ rules
     ; mod         := <to-sdf-ast> Module(modulename, starts, defs)
     ; file        := <format-module(|[])> mod
       
+  // Process the entire module, simplifying the definitions where possible
   to-sdf-ast: Module(name, starts, defs) -> (filename, (startsymbols, simpleSyntax))
     with
       startsymbols  := <to-start-symbols> starts
@@ -33,8 +36,10 @@ rules
     ; simpleSyntax  := <simplify> syntax
     ; filename      := <guarantee-extension(|"sdf3")> name
   
+  // Gets the filename and adds the /src-gen/ prefix to it, putting all results in that folder
   format-filename(|path): filename -> <concat-strings> [<split-before; Fst> (path, "/"), "/src-gen/", filename]
 
+  // Creates the root language file which imports all the modules
   format-mainfile: (path, imports) -> (mainfilepath, mainfile)
     with
       mainmodule    := <split-after; Snd; split-at-dot; Fst> (path, "/")
@@ -42,6 +47,7 @@ rules
     ; mainfilepath  := <format-filename(|path)> mainfilename
     ; mainfile      := <format-module(|imports)> (mainmodule, (ContextFreeStartSymbols([]), []))
       
+  // Creates an SDF3 AST node from a module definition
   format-module(|imports): (filename, (starts, syntax)) -> template
     with 
       modulename      := <split-at-dot; Fst> filename
@@ -52,6 +58,8 @@ rules
         SDFSection(starts),
         SDFSection(ContextFreeSyntax(syntax))
       ])
+
+  // Create import SDF3 AST node
   to-import-sdf: i -> Module(Unparameterized(i))
   
 rules
@@ -68,7 +76,7 @@ rules
   
 rules
 
-  // Creates a rule for each returned underlying grammar
+  // Creates a constructor for each returned underlying definition of the sort
   to-sdf-ast: Definition(LhsIdentifier(i), Rhs(r)) -> <concat> [defResult, repsResult]
     with
       iden          := <format-identifier> i
@@ -76,6 +84,7 @@ rules
     ; defResult     := <map(format-definition(|iden))> prods
     ; repsResult    := <map(format-repitition-definition(|iden))> reps
   
+  // Formats the definition in SDF3
   format-definition(|i): r -> SdfProductionWithCons(SortCons(SortDef(i), Constructor(constr)), Rhs(rhs), NoAttrs())
     with
       rhs     := <ensure-list> r
@@ -86,9 +95,9 @@ rules
     where <is-list> r
   ensure-list: r -> [r|[]]
 
+  // Format all additional returned rules from a repetition
   format-repitition-definition(|i): (repIden, [body|[]]) -> [SdfProductionWithCons(SortCons(SortDef(repIden), Constructor(constr)), Rhs(body), NoAttrs())]
     with constr := <concat-strings; newname> [i, repIden]
-
   format-repitition-definition(|i): (repIden, [body|t]) -> <concat> r
     with r := [<format-repitition-definition(|i)> (repIden, [body]),<format-repitition-definition(|i)> (repIden, t)]
 
@@ -104,10 +113,12 @@ rules
     with
       (defs, reps)  := <to-sdf-ast> t
 
+  // Create SDF3 simple repetitions where there are only identifiers
   to-sdf-ast: Rep(Sep(d), [Identifier(i)], One()) -> ([IterSep(Sort(<format-identifier> i), Lit(<double-quote> d))], [])
   to-sdf-ast: Rep(Sep(d), [Identifier(i)], Star()) -> ([IterStarSep(Sort(<format-identifier> i), Lit(<double-quote> d))], [])
   to-sdf-ast: Rep(None(), [Identifier(i)], One()) -> ([Iter(Sort(<format-identifier> i))], [])
   to-sdf-ast: Rep(None(), [Identifier(i)], Star()) -> ([IterStar(Sort(<format-identifier> i))], [])
+  // Create seperate repetition sort for inner part of repetition, then add normal SDF3 repetition
   to-sdf-ast: Rep(s, r, q) -> (defs, <concat> [[(repIden, repDef)], repReps, reps])
     with 
       (repDef, repReps) := <to-sdf-ast> Seq(r)
@@ -132,6 +143,7 @@ rules
       <is-substring(!"__")> i
     ; name := <split-after; Snd; format-identifier> (i, "__")
     
+  // Remove underscores and uppercase first letter
   format-identifier: i -> name
     with
     not (<is-substring(!"__")> i)
