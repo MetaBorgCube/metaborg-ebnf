@@ -11,11 +11,11 @@ strategies
 rules
 
   rename: SdfProductionWithCons(
-            SortCons(s, c)
-          , Rhs([Sort(i)])
-          , NoAttrs()
+            SortCons(s, c),
+            Rhs([Sort(i)]),
+            NoAttrs()
           ) -> SdfProductionWithCons(
-            SortCons(s, Constructor(i))
-          , Rhs([Sort(i)])
-          , NoAttrs()
+            SortCons(s, Constructor(i)),
+            Rhs([Sort(i)]),
+            NoAttrs()
           )
